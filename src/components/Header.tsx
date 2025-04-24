@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { useAuth } from "@/contex/AuthContex";
 import { useCart } from "@/contex/CartContex";
 import { FaShoppingCart, FaHeart, FaUser, FaSearch } from "react-icons/fa";
-import CategoryFilter from './CategoryFilter';
 import axiosInstance from "@/utils/axiosInstance";
 
 interface Category {
@@ -16,13 +15,21 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [categories, setCategories] = useState<Category[]>([]);
   const router = useRouter();
   const { isAuthenticated, logout } = useAuth();
   const { cart } = useCart();
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
 
-  // Fetch categories when component mounts
+  // Set initial searchTerm from URL query
+  useEffect(() => {
+    const { query } = router.query;
+    if (query && typeof query === "string") {
+      setSearchTerm(decodeURIComponent(query));
+    }
+  }, [router.query]);
+
+  // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -30,7 +37,6 @@ const Header = () => {
         setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
-        // Fallback categories if API fails
         setCategories([
           { id: 1, name: "Electronics" },
           { id: 2, name: "Furniture" },
@@ -61,7 +67,7 @@ const Header = () => {
     setIsCategoryOpen(false);
     
     if (categoryId === null) {
-      router.push('/');  // Changed from /products to / since that's your main page
+      router.push("/");
     } else {
       const category = categories.find(cat => cat.id === categoryId);
       if (category) {
@@ -86,8 +92,8 @@ const Header = () => {
             <span className="text-2xl font-bold">LOGO</span>
           </Link>
 
-         {/* Search Bar */}
-         <div className="flex-1 max-w-2xl mx-8">
+          {/* Search Bar */}
+          <div className="flex-1 max-w-2xl mx-8">
             <form onSubmit={handleSearch} className="relative">
               <input
                 type="text"
@@ -106,25 +112,27 @@ const Header = () => {
           </div>
 
           {/* Right Icons */}
-          <div className="flex items-center space-x-6">
-            <Link href="/cart" className="relative">
-              <FaShoppingCart className="text-gray-600 w-6 h-6" />
-              {cartItemsCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {cartItemsCount}
-                </span>
-              )}
-            </Link>
-            <Link href="/wishlist">
-              <FaHeart className="text-gray-600 w-6 h-6" />
-            </Link>
+          <div className="flex items-center space-x-4">
             {isAuthenticated ? (
-              <button onClick={handleLogout}>
-                <FaUser className="text-gray-600 w-6 h-6" />
-              </button>
+              <>
+                <Link href="/cart" className="relative">
+                  <FaShoppingCart className="h-6 w-6 text-gray-600" />
+                  {cartItemsCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                      {cartItemsCount}
+                    </span>
+                  )}
+                </Link>
+                <Link href="/wishlist">
+                  <FaHeart className="h-6 w-6 text-gray-600" />
+                </Link>
+                <button onClick={handleLogout}>
+                  <FaUser className="h-6 w-6 text-gray-600" />
+                </button>
+              </>
             ) : (
               <Link href="/login">
-                <FaUser className="text-gray-600 w-6 h-6" />
+                <FaUser className="h-6 w-6 text-gray-600" />
               </Link>
             )}
           </div>
@@ -156,16 +164,11 @@ const Header = () => {
                 </svg>
               </button>
 
-              {/* Enhanced Dropdown Menu with Selection */}
               {isCategoryOpen && (
                 <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-md shadow-lg py-1 z-50">
                   <button
                     onClick={() => handleCategorySelect(null)}
-                    className={`w-full px-4 py-2 text-left ${
-                      selectedCategory === null
-                        ? "bg-gray-100 text-black font-semibold"
-                        : "text-gray-700 hover:bg-gray-50"
-                    }`}
+                    className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
                   >
                     All Products
                   </button>
@@ -173,11 +176,7 @@ const Header = () => {
                     <button
                       key={category.id}
                       onClick={() => handleCategorySelect(category.id)}
-                      className={`w-full px-4 py-2 text-left ${
-                        selectedCategory === category.id
-                          ? "bg-gray-100 text-black font-semibold"
-                          : "text-gray-700 hover:bg-gray-50"
-                      }`}
+                      className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
                     >
                       {category.name}
                     </button>
