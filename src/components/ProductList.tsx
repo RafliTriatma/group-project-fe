@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { MdOutlineShoppingCartCheckout } from "react-icons/md";
-import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
+import { FaStar, FaStarHalfAlt, FaRegStar, FaHeart, FaRegHeart } from "react-icons/fa";
 import { BiSortAlt2 } from "react-icons/bi";
 import { useCart } from "@/contex/CartContex";
+import { useWishlist } from "@/contex/WishlistContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
@@ -43,6 +44,7 @@ const PRODUCTS_PER_PAGE = 12;
 
 const ProductList: React.FC<Props> = ({ products }) => {
   const { addToCart } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { isAuthenticated } = useAuth();
   const router = useRouter();
   const [sortBy, setSortBy] = useState<string>("popular");
@@ -182,6 +184,29 @@ const ProductList: React.FC<Props> = ({ products }) => {
     toast.success("Product added to cart");
   };
 
+  const handleToggleWishlist = (product: Product) => {
+    if (!isAuthenticated) {
+      router.push("/login");
+      return;
+    }
+
+    const productItem = {
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      image: product.images[0],
+      category: product.category,
+    };
+
+    if (isInWishlist(product.id)) {
+      removeFromWishlist(product.id);
+      toast.info("Product removed from wishlist");
+    } else {
+      addToWishlist(productItem);
+      toast.success("Product added to wishlist");
+    }
+  };
+
   // Get sorted products
   const sortedProducts = getSortedProducts();
   
@@ -199,23 +224,6 @@ const ProductList: React.FC<Props> = ({ products }) => {
     setCurrentPage(1);
     loadInitialProducts();
   }, [sortBy, products]); // Add products as a dependency too
-
-  // Load more products when "Load More" is clicked
-  // const loadMoreProducts = () => {
-  //   setIsLoading(true);
-    
-  //   // Simulate network delay (remove in production)
-  //   setTimeout(() => {
-  //     const nextProducts = sortedProducts.slice(
-  //       0, 
-  //       Math.min((currentPage + 1) * PRODUCTS_PER_PAGE, sortedProducts.length)
-  //     );
-      
-  //     setVisibleProducts(nextProducts);
-  //     setCurrentPage(currentPage + 1);
-  //     setIsLoading(false);
-  //   }, 800);
-  // };
 
   // Function to handle page change
   const handlePageChange = (pageNumber: number) => {
@@ -374,6 +382,8 @@ const ProductList: React.FC<Props> = ({ products }) => {
                     onClick={() => {
                       setSortBy(option.value);
                       setIsDropdownOpen(false);
+                      setCurrentPage(1);
+                      loadInitialProducts();
                     }}
                     className={`${
                       sortBy === option.value ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
@@ -407,6 +417,7 @@ const ProductList: React.FC<Props> = ({ products }) => {
         {visibleProducts.map((product) => {
           const promoLabel = getRandomPromoLabel(product.id);
           const { rating, count } = getRandomRating(product.id);
+          const isWishlisted = isInWishlist(product.id);
           
           return (
             <Link
@@ -431,6 +442,21 @@ const ProductList: React.FC<Props> = ({ products }) => {
                     </span>
                   </div>
                 )}
+
+                {/* Wishlist Button */}
+                <button 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleToggleWishlist(product);
+                  }}
+                  className="absolute top-2 right-2 bg-white rounded-full p-1.5 shadow-sm z-10 hover:bg-gray-100"
+                >
+                  {isWishlisted ? (
+                    <FaHeart className="h-5 w-5 text-red-500" />
+                  ) : (
+                    <FaRegHeart className="h-5 w-5 text-gray-600" />
+                  )}
+                </button>
               </div>
 
               <div className="p-4 flex flex-col flex-grow">
@@ -491,30 +517,6 @@ const ProductList: React.FC<Props> = ({ products }) => {
         <div className="inline-flex items-center gap-2 my-4">
           {renderPaginationButtons()}
         </div>
-        
-        {/* Optional: Show Load More button as an alternative */}
-        {/* <div className="text-center mt-4">
-          <p className="text-sm text-gray-500 mb-2">- OR -</p>
-          {visibleProducts.length < sortedProducts.length && (
-            <button
-              onClick={loadMoreProducts}
-              disabled={isLoading}
-              className="bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-md hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-            >
-              {isLoading ? (
-                <span className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Loading...
-                </span>
-              ) : (
-                `Load More (${sortedProducts.length - visibleProducts.length} remaining)`
-              )}
-            </button>
-          )}
-        </div> */}
         
         {/* Pagination Info */}
         <div className="mt-4 text-center text-sm text-gray-500">

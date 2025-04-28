@@ -41,6 +41,15 @@ const OrderSuccessPage = () => {
     day: 'numeric'
   });
 
+  // Handle "View Order" button click
+  const handleViewOrder = () => {
+    if (orderId) {
+      router.push(`/order/${orderId}`);
+    } else {
+      router.push('/orders');
+    }
+  };
+
   // Show loading while validating
   if (!isValidOrder) {
     return (
@@ -114,7 +123,7 @@ const OrderSuccessPage = () => {
                 CONTINUE SHOPPING
               </button>
             </Link>
-            <Link href="/orders">
+            <Link href={orderId ? `/order/${orderId}` : "/orders"}>
               <button className="px-5 py-3 bg-black text-white rounded hover:bg-gray-800 transition duration-200 flex items-center justify-center space-x-1 text-sm font-medium">
                 <span>VIEW ORDER</span>
                 <HiOutlineArrowNarrowRight className="w-4 h-4" />
