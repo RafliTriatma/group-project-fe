@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MdOutlineShoppingCartCheckout } from "react-icons/md";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 import { BiSortAlt2 } from "react-icons/bi";
@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import { useAuth } from "@/contex/AuthContex";
+import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 
 interface Product {
   id: number;
@@ -38,12 +39,17 @@ const sortOptions: SortOption[] = [
   { label: "Name: Z to A", value: "name-desc" },
 ];
 
+const PRODUCTS_PER_PAGE = 12;
+
 const ProductList: React.FC<Props> = ({ products }) => {
   const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
   const router = useRouter();
-  const [sortBy, setSortBy] = useState<string>("popular"); // Default sort option
+  const [sortBy, setSortBy] = useState<string>("popular");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [visibleProducts, setVisibleProducts] = useState<Product[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Function to generate a random promo label for products
   const getRandomPromoLabel = (productId: number) => {
@@ -178,13 +184,174 @@ const ProductList: React.FC<Props> = ({ products }) => {
 
   // Get sorted products
   const sortedProducts = getSortedProducts();
+  
+  // Total number of pages
+  const totalPages = Math.ceil(sortedProducts.length / PRODUCTS_PER_PAGE);
+
+  // Load initial set of products
+  const loadInitialProducts = () => {
+    const initialProducts = sortedProducts.slice(0, PRODUCTS_PER_PAGE);
+    setVisibleProducts(initialProducts);
+  };
+
+  // Make sure this useEffect runs on initial render
+  useEffect(() => {
+    setCurrentPage(1);
+    loadInitialProducts();
+  }, [sortBy, products]); // Add products as a dependency too
+
+  // Load more products when "Load More" is clicked
+  // const loadMoreProducts = () => {
+  //   setIsLoading(true);
+    
+  //   // Simulate network delay (remove in production)
+  //   setTimeout(() => {
+  //     const nextProducts = sortedProducts.slice(
+  //       0, 
+  //       Math.min((currentPage + 1) * PRODUCTS_PER_PAGE, sortedProducts.length)
+  //     );
+      
+  //     setVisibleProducts(nextProducts);
+  //     setCurrentPage(currentPage + 1);
+  //     setIsLoading(false);
+  //   }, 800);
+  // };
+
+  // Function to handle page change
+  const handlePageChange = (pageNumber: number) => {
+    setIsLoading(true);
+    setCurrentPage(pageNumber);
+    
+    // Simulate loading delay (remove in production)
+    setTimeout(() => {
+      const startIndex = (pageNumber - 1) * PRODUCTS_PER_PAGE;
+      const endIndex = Math.min(startIndex + PRODUCTS_PER_PAGE, sortedProducts.length);
+      const paginatedProducts = sortedProducts.slice(startIndex, endIndex);
+      
+      setVisibleProducts(paginatedProducts);
+      setIsLoading(false);
+      
+      // Scroll to top of product grid
+      const gridElement = document.getElementById('product-grid');
+      window.scrollTo({ 
+        top: (gridElement?.offsetTop ?? 0) - 100, 
+        behavior: 'smooth' 
+      });
+    }, 400);
+  };
+
+  // Function to generate pagination buttons
+  const renderPaginationButtons = () => {
+    const buttons = [];
+    const maxButtonsToShow = 5; // Show max 5 page buttons at a time
+    
+    let startPage = Math.max(1, currentPage - Math.floor(maxButtonsToShow / 2));
+    let endPage = Math.min(totalPages, startPage + maxButtonsToShow - 1);
+    
+    // Adjust start page if we're near the end
+    if (endPage - startPage + 1 < maxButtonsToShow) {
+      startPage = Math.max(1, endPage - maxButtonsToShow + 1);
+    }
+    
+    // Previous page button
+    buttons.push(
+      <button
+        key="prev"
+        onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
+        disabled={currentPage === 1 || isLoading}
+        className="flex items-center justify-center w-9 h-9 rounded-md border border-gray-300 bg-white text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+        aria-label="Previous page"
+      >
+        <HiChevronLeft className="w-5 h-5" />
+      </button>
+    );
+    
+    // First page button if not visible in current range
+    if (startPage > 1) {
+      buttons.push(
+        <button
+          key="1"
+          onClick={() => handlePageChange(1)}
+          disabled={isLoading}
+          className="flex items-center justify-center w-9 h-9 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+        >
+          1
+        </button>
+      );
+      
+      // Ellipsis if there's a gap
+      if (startPage > 2) {
+        buttons.push(
+          <span key="ellipsis1" className="flex items-center justify-center w-9 h-9 text-gray-500">
+            ...
+          </span>
+        );
+      }
+    }
+    
+    // Page number buttons
+    for (let i = startPage; i <= endPage; i++) {
+      buttons.push(
+        <button
+          key={i}
+          onClick={() => handlePageChange(i)}
+          disabled={isLoading}
+          className={`flex items-center justify-center w-9 h-9 rounded-md ${
+            i === currentPage
+              ? 'bg-black text-white'
+              : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+          }`}
+        >
+          {i}
+        </button>
+      );
+    }
+    
+    // Ellipsis if there's a gap before last page
+    if (endPage < totalPages - 1) {
+      buttons.push(
+        <span key="ellipsis2" className="flex items-center justify-center w-9 h-9 text-gray-500">
+          ...
+        </span>
+      );
+    }
+    
+    // Last page button if not visible in current range
+    if (endPage < totalPages) {
+      buttons.push(
+        <button
+          key={totalPages}
+          onClick={() => handlePageChange(totalPages)}
+          disabled={isLoading}
+          className="flex items-center justify-center w-9 h-9 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+        >
+          {totalPages}
+        </button>
+      );
+    }
+    
+    // Next page button
+    buttons.push(
+      <button
+        key="next"
+        onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
+        disabled={currentPage === totalPages || isLoading}
+        className="flex items-center justify-center w-9 h-9 rounded-md border border-gray-300 bg-white text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+        aria-label="Next page"
+      >
+        <HiChevronRight className="w-5 h-5" />
+      </button>
+    );
+    
+    return buttons;
+  };
 
   return (
     <div className="w-full">
       {/* Sorting Controls */}
       <div className="flex justify-between items-center mb-6">
         <div className="text-sm text-gray-500">
-          Showing {sortedProducts.length} products
+          Showing {visibleProducts.length} of {sortedProducts.length} products
         </div>
         <div className="relative">
           <button
@@ -222,9 +389,22 @@ const ProductList: React.FC<Props> = ({ products }) => {
         </div>
       </div>
 
-      {/* Product Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mx-auto">
-        {sortedProducts.map((product) => {
+      {/* Loading Overlay */}
+      {isLoading && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white p-5 rounded-lg shadow-lg flex items-center">
+            <svg className="animate-spin h-5 w-5 mr-3 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>Loading products...</span>
+          </div>
+        </div>
+      )}
+
+      {/* Product Grid - add id for scroll reference */}
+      <div id="product-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mx-auto">
+        {visibleProducts.map((product) => {
           const promoLabel = getRandomPromoLabel(product.id);
           const { rating, count } = getRandomRating(product.id);
           
@@ -240,6 +420,7 @@ const ProductList: React.FC<Props> = ({ products }) => {
                   src={product.images[0] || "/placeholder.svg"}
                   alt={product.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy" // Add native lazy loading
                 />
                 
                 {/* Conditional Promo Label */}
@@ -302,6 +483,43 @@ const ProductList: React.FC<Props> = ({ products }) => {
             </Link>
           );
         })}
+      </div>
+
+      {/* Choose between Load More or Pagination */}
+      <div className="mt-8 flex flex-col items-center">
+        {/* Pagination Controls */}
+        <div className="inline-flex items-center gap-2 my-4">
+          {renderPaginationButtons()}
+        </div>
+        
+        {/* Optional: Show Load More button as an alternative */}
+        {/* <div className="text-center mt-4">
+          <p className="text-sm text-gray-500 mb-2">- OR -</p>
+          {visibleProducts.length < sortedProducts.length && (
+            <button
+              onClick={loadMoreProducts}
+              disabled={isLoading}
+              className="bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-md hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+            >
+              {isLoading ? (
+                <span className="flex items-center justify-center">
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Loading...
+                </span>
+              ) : (
+                `Load More (${sortedProducts.length - visibleProducts.length} remaining)`
+              )}
+            </button>
+          )}
+        </div> */}
+        
+        {/* Pagination Info */}
+        <div className="mt-4 text-center text-sm text-gray-500">
+          Showing page {currentPage} of {totalPages}
+        </div>
       </div>
     </div>
   );
