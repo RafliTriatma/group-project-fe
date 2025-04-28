@@ -214,13 +214,18 @@ const CheckoutPage = () => {
     // Simulate API call
     setTimeout(() => {
       setIsProcessing(false);
-      setOrderComplete(true);
       
-      // Clear cart after order completion
-      setTimeout(() => {
-        clearCart();
-        router.push("/");
-      }, 3000);
+      // Generate a random order ID
+      const orderId = `ORD-${Math.floor(Math.random() * 10000)}`;
+      
+      // Navigate to success page with order details
+      router.push({
+        pathname: '/order-success',
+        query: { 
+          orderId: orderId,
+          total: finalTotal.toFixed(2)
+        }
+      });
     }, 2000);
   };
 
