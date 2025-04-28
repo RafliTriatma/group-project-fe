@@ -97,7 +97,7 @@ const HomePage = ({ initialCategories }: { initialCategories: Category[] }) => {
     <div>
       <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <ProductList products={products || []} />
+        <ProductList products={filteredProducts} />
       </div>
       <Footer />
     </div>
