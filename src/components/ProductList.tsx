@@ -449,7 +449,7 @@ const ProductList: React.FC<Props> = ({ products }) => {
                     e.preventDefault();
                     handleToggleWishlist(product);
                   }}
-                  className="absolute top-2 right-2 bg-white rounded-full p-1.5 shadow-sm z-10 hover:bg-gray-100"
+                  className="absolute top-2 right-2 bg-white rounded-full p-1.5 shadow-sm z-100 hover:bg-gray-100"
                 >
                   {isWishlisted ? (
                     <FaHeart className="h-5 w-5 text-red-500" />
