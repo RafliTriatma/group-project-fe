@@ -7,7 +7,8 @@ import axiosInstance from "@/utils/axiosInstance";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 interface SignUpData {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   avatar: string;
@@ -16,7 +17,15 @@ interface SignUpData {
 const signUpService = {
   async registerUser(userData: SignUpData) {
     try {
-      const response = await axiosInstance.post("/users/", userData);
+      // Combine firstName and lastName for API that expects name
+      const apiData = {
+        name: `${userData.firstName} ${userData.lastName}`.trim(),
+        email: userData.email,
+        password: userData.password,
+        avatar: userData.avatar,
+      };
+
+      const response = await axiosInstance.post("/users/", apiData);
       return response.data;
     } catch (error: any) {
       if (error.response) {
@@ -57,9 +66,14 @@ const signUpService = {
     return null;
   },
 
-  validateInputs(name: string, email: string, password: string): string | null {
-    if (!name || !email || !password) {
-      return "All fields are required";
+  validateInputs(
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string
+  ): string | null {
+    if (!firstName || !email || !password) {
+      return "First name, email, and password are required";
     }
 
     if (!email.includes("@")) {
@@ -76,7 +90,8 @@ const signUpService = {
 };
 
 const SignUpPage = () => {
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -87,7 +102,12 @@ const SignUpPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const validationError = signUpService.validateInputs(name, email, password);
+    const validationError = signUpService.validateInputs(
+      firstName,
+      lastName,
+      email,
+      password
+    );
     if (validationError) {
       setError(validationError);
       return;
@@ -95,11 +115,14 @@ const SignUpPage = () => {
 
     setLoading(true);
     try {
+      // Combine firstName and lastName for the API that expects name
+      const fullName = `${firstName} ${lastName}`.trim();
+
       const response = await axiosInstance.post("/users", {
-        name,
+        name: fullName,
         email,
         password,
-        avatar: "https://api.lorem.space/image/face?w=150&h=150"
+        avatar: "https://api.lorem.space/image/face?w=150&h=150",
       });
 
       if (response.data) {
@@ -121,8 +144,11 @@ const SignUpPage = () => {
     if (error) setError("");
 
     switch (name) {
-      case "name":
-        setName(value);
+      case "firstName":
+        setFirstName(value);
+        break;
+      case "lastName":
+        setLastName(value);
         break;
       case "email":
         setEmail(value);
@@ -150,22 +176,42 @@ const SignUpPage = () => {
             Sign Up
           </h2>
 
-          <div className="mb-6">
-            <label
-              htmlFor="name"
-              className="block text-sm font-semibold text-gray-700"
-            >
-              Full Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              className="w-full mt-2 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
-              placeholder="Enter your full name"
-              value={name}
-              onChange={handleInputChange}
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div>
+              <label
+                htmlFor="firstName"
+                className="block text-sm font-semibold text-gray-700"
+              >
+                First Name*
+              </label>
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                className="w-full mt-2 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+                placeholder="First name"
+                value={firstName}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="lastName"
+                className="block text-sm font-semibold text-gray-700"
+              >
+                Last Name
+              </label>
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                className="w-full mt-2 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+                placeholder="Last name"
+                value={lastName}
+                onChange={handleInputChange}
+              />
+            </div>
           </div>
 
           <div className="mb-6">
@@ -173,7 +219,7 @@ const SignUpPage = () => {
               htmlFor="email"
               className="block text-sm font-semibold text-gray-700"
             >
-              Email Address
+              Email Address*
             </label>
             <input
               type="email"
@@ -183,6 +229,7 @@ const SignUpPage = () => {
               placeholder="Enter your email"
               value={email}
               onChange={handleInputChange}
+              required
             />
           </div>
 
@@ -191,7 +238,7 @@ const SignUpPage = () => {
               htmlFor="password"
               className="block text-sm font-semibold text-gray-700"
             >
-              Password
+              Password*
             </label>
             <div className="relative">
               <input
@@ -202,6 +249,7 @@ const SignUpPage = () => {
                 placeholder="Enter your password"
                 value={password}
                 onChange={handleInputChange}
+                required
               />
               <button
                 type="button"
@@ -215,6 +263,10 @@ const SignUpPage = () => {
                 )}
               </button>
             </div>
+            <p className="text-xs text-gray-500 mt-1">
+              Password must be at least 8 characters with 1 uppercase letter and
+              1 number
+            </p>
           </div>
 
           {error && (

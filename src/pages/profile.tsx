@@ -80,15 +80,15 @@ const mockPaymentMethods = [
 ];
 
 const ProfilePage = () => {
-  const { isAuthenticated, user, isLoading, logout } = useAuth();
+  const { isAuthenticated, user, isLoading, logout, updateUser } = useAuth();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("personal-info");
 
   // Additional user profile fields that might not be in the auth context
   const [profile, setProfile] = useState({
-    firstName: "Udin",
-    lastName: "Petot",
-    email: "udin.petot@example.com",
+    firstName: user?.firstName || "Udin",
+    lastName: user?.lastName || "Petot",
+    email: "udin.petot@example.com", // Default email
     phone: "+62 81234567890",
     avatar: "/image/revoulogo.png",
     dateJoined: "October 2020",
@@ -98,12 +98,17 @@ const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({ ...profile });
 
-  // Check if user is authenticated
+  // Update profile from user data when it changes
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push("/login");
+    if (user) {
+      setProfile((prev) => ({
+        ...prev,
+        firstName: user.firstName || prev.firstName,
+        lastName: user.lastName || prev.lastName,
+        // Tetap menggunakan avatar default
+      }));
     }
-  }, [isLoading, isAuthenticated, router]);
+  }, [user]);
 
   // Handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -112,15 +117,36 @@ const ProfilePage = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Here you would normally send the updated data to your API
-    // For this demo, we'll just update the local state
-    setProfile(formData);
-    setIsEditing(false);
-    toast.success("Profile updated successfully");
+    try {
+      // Update local state
+      setProfile(formData);
+
+      // Update user context
+      if (updateUser) {
+        updateUser({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          avatar: formData.avatar,
+        });
+      }
+
+      setIsEditing(false);
+      toast.success("Profile updated successfully");
+    } catch (error) {
+      console.error("Failed to update profile:", error);
+      toast.error("Failed to update profile");
+    }
   };
+
+  // Check if user is authenticated
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push("/login");
+    }
+  }, [isLoading, isAuthenticated, router]);
 
   // If still loading or not authenticated, show loading state
   if (isLoading) {

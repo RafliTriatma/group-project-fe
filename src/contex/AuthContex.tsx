@@ -3,7 +3,9 @@ import axiosInstance from "@/utils/axiosInstance";
 import Cookies from "js-cookie";
 
 interface User {
-  name: string;
+  name?: string;
+  firstName?: string;
+  lastName?: string;
   avatar?: string;
   // tambah field lain yang diperlukan
 }
@@ -40,7 +42,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         "Authorization"
       ] = `Bearer ${token}`;
       const response = await axiosInstance.get("/auth/profile");
-      setUser(response.data);
+
+      // Process user data to extract firstName and lastName if needed
+      const userData = response.data;
+      if (userData.name && (!userData.firstName || !userData.lastName)) {
+        const nameParts = userData.name.split(" ");
+        userData.firstName = nameParts[0] || "";
+        userData.lastName = nameParts.slice(1).join(" ") || "";
+      }
+
+      setUser(userData);
     } catch (error) {
       console.error("Error fetching user data:", error);
       handleLogout();
@@ -91,6 +102,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const updateUser = (userData: Partial<User>) => {
     if (user) {
       const updatedUser = { ...user, ...userData };
+
+      // If firstName or lastName is updated, update the name as well
+      if (
+        (userData.firstName || userData.lastName) &&
+        updatedUser.firstName &&
+        updatedUser.lastName
+      ) {
+        updatedUser.name =
+          `${updatedUser.firstName} ${updatedUser.lastName}`.trim();
+      }
+
       setUser(updatedUser);
 
       // In a real app, you would also send this data to the server

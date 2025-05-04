@@ -164,12 +164,17 @@ const Header = () => {
                 className="flex items-center focus:outline-none"
               >
                 {isAuthenticated ? (
-                  <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-gray-200">
-                    <img
-                      src={defaultProfilePic}
-                      alt="Profile"
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="flex items-center space-x-2">
+                    <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-gray-200">
+                      <img
+                        src={defaultProfilePic}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <span className="text-sm font-medium hidden md:inline-block">
+                      {user?.firstName || "Hi, User"}
+                    </span>
                   </div>
                 ) : (
                   <FaUser className="h-6 w-6 text-gray-600" />
@@ -189,7 +194,9 @@ const Header = () => {
                           />
                         </div>
                         <div className="font-medium">
-                          {user?.name || "Welcome!"}
+                          {user?.firstName
+                            ? `${user.firstName} ${user.lastName || ""}`
+                            : "Welcome!"}
                         </div>
                       </div>
                       <Link href="/profile">
