@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import axiosInstance from "@/utils/axiosInstance";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useAuth } from "@/contex/AuthContex";
 
 interface SignUpData {
   firstName: string;
@@ -98,6 +99,7 @@ const SignUpPage = () => {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,6 +128,7 @@ const SignUpPage = () => {
       });
 
       if (response.data) {
+        // Redirect to login page with email pre-filled or auto-login
         router.push("/login");
       }
     } catch (error: any) {

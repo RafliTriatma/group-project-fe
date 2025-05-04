@@ -86,9 +86,9 @@ const ProfilePage = () => {
 
   // Additional user profile fields that might not be in the auth context
   const [profile, setProfile] = useState({
-    firstName: user?.firstName || "Udin",
-    lastName: user?.lastName || "Petot",
-    email: "udin.petot@example.com", // Default email
+    firstName: user?.firstName || "User",
+    lastName: user?.lastName || "Default",
+    email: user?.email || "user.default@example.com", // Menggunakan email dari auth context jika tersedia
     phone: "+62 81234567890",
     avatar: "/image/revoulogo.png",
     dateJoined: "October 2020",
@@ -105,6 +105,7 @@ const ProfilePage = () => {
         ...prev,
         firstName: user.firstName || prev.firstName,
         lastName: user.lastName || prev.lastName,
+        email: user.email || prev.email, // Memperbarui email dari user context
         // Tetap menggunakan avatar default
       }));
     }

@@ -7,6 +7,7 @@ interface User {
   firstName?: string;
   lastName?: string;
   avatar?: string;
+  email?: string;
   // tambah field lain yang diperlukan
 }
 
@@ -51,6 +52,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         userData.lastName = nameParts.slice(1).join(" ") || "";
       }
 
+      // Preserve email if not returned by API
+      if (!userData.email && user?.email) {
+        userData.email = user.email;
+      }
+
       setUser(userData);
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -82,6 +88,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         "Authorization"
       ] = `Bearer ${access_token}`;
       setIsAuthenticated(true);
+
+      // Store the email temporarily before fetching user data
+      setUser((prevUser) => ({ ...prevUser, email }));
+
       await fetchUserData(access_token);
       return true;
     } catch (error: any) {
