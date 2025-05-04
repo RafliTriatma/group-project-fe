@@ -12,6 +12,7 @@ import {
   FaSignOutAlt,
   FaClipboardList,
   FaUserCircle,
+  FaMapMarkerAlt,
 } from "react-icons/fa";
 import axiosInstance from "@/utils/axiosInstance";
 import CartIcon from "./CartIcon";
@@ -300,8 +301,9 @@ const Header = () => {
               Need Help
             </Link> */}
           </div>
-          <div className="text-gray-600">
-            <span>+62-202-555-010</span>
+          <div className="text-gray-600 flex items-center">
+            <FaMapMarkerAlt className="mr-1" />
+            <span>Jakarta</span>
           </div>
         </div>
       </nav>
