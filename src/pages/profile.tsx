@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { toast } from "react-toastify";
 import Profile from "next/image";
+import Link from "next/link";
 
 // Mock data for demo purposes
 const mockOrders = [
@@ -159,6 +160,15 @@ const ProfilePage = () => {
       <Header />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 mb-4 text-sm">
+          <Link href="/" className="text-gray-500 hover:text-gray-700">
+            Home
+          </Link>
+          <span className="text-gray-400">/</span>
+          <span className="text-gray-800">My Account</span>
+        </div>
+
         <h1 className="text-2xl font-bold mb-8">My Account</h1>
 
         <div className="flex flex-col md:flex-row gap-6">
