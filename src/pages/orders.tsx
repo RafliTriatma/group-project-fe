@@ -31,11 +31,11 @@ const mockOrders = [
     },
     shippingAddress: {
       name: "John Doe",
-      street: "123 Main St",
-      city: "New York",
-      state: "NY",
+      street: "Jl. Raya no. 123",
+      city: "South Jakarta",
+      state: "DKI Jakarta",
       zip: "10001",
-      country: "United States"
+      country: "Indonesia"
     },
     paymentMethod: "Credit Card (•••• 4589)"
   },
@@ -62,11 +62,11 @@ const mockOrders = [
     },
     shippingAddress: {
       name: "John Doe",
-      street: "123 Main St",
-      city: "New York",
-      state: "NY",
+      street: "Jl. Raya no. 123",
+      city: "South Jakarta",
+      state: "DKI Jakarta",
       zip: "10001",
-      country: "United States"
+      country: "Indonesia"
     },
     paymentMethod: "PayPal"
   },
@@ -92,11 +92,11 @@ const mockOrders = [
     },
     shippingAddress: {
       name: "John Doe",
-      street: "123 Main St",
-      city: "New York",
-      state: "NY",
+      street: "Jl. Raya no. 123",
+      city: "South Jakarta",
+      state: "DKI Jakarta",
       zip: "10001",
-      country: "United States"
+      country: "Indonesia"
     },
     paymentMethod: "Credit Card (•••• 4589)"
   }
@@ -297,11 +297,11 @@ const Orders = () => {
                       <div key={item.id} className="flex items-center gap-3">
                         <div className="w-16 h-16 bg-gray-100 rounded flex-shrink-0 flex items-center justify-center overflow-hidden">
                           <img 
-                            src={item.image || "/placeholder-image.jpg"} 
+                            src={item.image || "/image/revoulogo.png"} 
                             alt={item.name}
                             className="w-full h-full object-cover"
                             onError={(e) => {
-                              (e.target as HTMLImageElement).src = "/placeholder-image.jpg";
+                              (e.target as HTMLImageElement).src = "/image/revoulogo.png";
                             }}
                           />
                         </div>
