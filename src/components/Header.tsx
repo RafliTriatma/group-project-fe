@@ -4,10 +4,19 @@ import { useRouter } from "next/router";
 import { useAuth } from "@/contex/AuthContex";
 import { useCart } from "@/contex/CartContex";
 import { useWishlist } from "@/contex/WishlistContext";
-import { FaShoppingCart, FaHeart, FaUser, FaSearch, FaSignOutAlt, FaClipboardList, FaUserCircle } from "react-icons/fa";
+import {
+  FaShoppingCart,
+  FaHeart,
+  FaUser,
+  FaSearch,
+  FaSignOutAlt,
+  FaClipboardList,
+  FaUserCircle,
+} from "react-icons/fa";
 import axiosInstance from "@/utils/axiosInstance";
 import CartIcon from "./CartIcon";
 import WishlistIcon from "./WishlistIcon";
+import Image from "next/image";
 
 interface Category {
   id: number;
@@ -38,11 +47,14 @@ const Header = () => {
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target as Node)
+      ) {
         setIsProfileOpen(false);
       }
     }
-    
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -63,7 +75,7 @@ const Header = () => {
           { id: 3, name: "Shoes" },
           { id: 4, name: "Clothes" },
           { id: 5, name: "Books" },
-          { id: 6, name: "Fashion" }
+          { id: 6, name: "Fashion" },
         ]);
       }
     };
@@ -87,11 +99,11 @@ const Header = () => {
   const handleCategorySelect = (categoryId: number | null) => {
     setSelectedCategory(categoryId);
     setIsCategoryOpen(false);
-    
+
     if (categoryId === null) {
       router.push("/");
     } else {
-      const category = categories.find(cat => cat.id === categoryId);
+      const category = categories.find((cat) => cat.id === categoryId);
       if (category) {
         router.push(`/category/${category.name.toLowerCase()}`);
       }
@@ -108,6 +120,9 @@ const Header = () => {
   const toggleProfileDropdown = () => {
     setIsProfileOpen(!isProfileOpen);
   };
+
+  // Add default profile picture
+  const defaultProfilePic = "/image/revoulogo.png";
 
   return (
     <header className="sticky top-0 bg-white shadow-sm z-50">
@@ -128,7 +143,7 @@ const Header = () => {
                 placeholder="Search for anything..."
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              <button 
+              <button
                 type="submit"
                 className="absolute right-3 top-1/2 transform -translate-y-1/2"
               >
@@ -141,23 +156,40 @@ const Header = () => {
           <div className="flex items-center space-x-4">
             <CartIcon />
             {/* <WishlistIcon /> */}
-            
+
             {/* Profile Icon with Dropdown */}
             <div className="relative" ref={profileRef}>
-              <button 
+              <button
                 onClick={toggleProfileDropdown}
                 className="flex items-center focus:outline-none"
               >
-                <FaUser className="h-6 w-6 text-gray-600" />
+                {isAuthenticated ? (
+                  <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-gray-200">
+                    <img
+                      src={defaultProfilePic}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <FaUser className="h-6 w-6 text-gray-600" />
+                )}
               </button>
-              
+
               {isProfileOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
                   {isAuthenticated ? (
                     <>
-                      <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
+                      <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-100 flex items-center">
+                        <div className="w-8 h-8 rounded-full overflow-hidden mr-2">
+                          <img
+                            src={defaultProfilePic}
+                            alt="Profile"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
                         <div className="font-medium">
-                          {user?.name || 'Welcome!'}
+                          {user?.name || "Welcome!"}
                         </div>
                       </div>
                       <Link href="/profile">
@@ -175,7 +207,7 @@ const Header = () => {
                           <FaHeart className="mr-2" /> My Wishlist
                         </div>
                       </Link>
-                      <button 
+                      <button
                         onClick={handleLogout}
                         className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >

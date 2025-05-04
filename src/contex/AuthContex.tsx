@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 
 interface User {
   name: string;
+  avatar?: string;
   // tambah field lain yang diperlukan
 }
 
@@ -13,6 +14,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   isLoading: boolean;
+  updateUser: (userData: Partial<User>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -85,12 +87,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null);
   };
 
+  // Function to update user data
+  const updateUser = (userData: Partial<User>) => {
+    if (user) {
+      const updatedUser = { ...user, ...userData };
+      setUser(updatedUser);
+
+      // In a real app, you would also send this data to the server
+      // Example:
+      // axiosInstance.put('/auth/profile', userData)
+      //   .catch(error => console.error('Failed to update user profile:', error));
+    }
+  };
+
   const value = {
     isAuthenticated,
     user,
     login,
     logout: handleLogout,
     isLoading: loading,
+    updateUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
