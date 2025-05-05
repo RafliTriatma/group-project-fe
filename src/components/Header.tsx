@@ -33,6 +33,7 @@ const Header = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
   const router = useRouter();
   const { isAuthenticated, user, logout } = useAuth();
   const { cart } = useCart();
@@ -82,19 +83,43 @@ const Header = () => {
       debouncedSearchTerm.trim() !== currentQuery &&
       router.pathname !== "/search"
     ) {
+      // Show loading indicator
+      setIsSearchLoading(true);
+
       // Only perform search redirect if we're not already on the search page
-      router.push(
-        `/search?query=${encodeURIComponent(debouncedSearchTerm.trim())}`,
-        undefined,
-        { shallow: true }
-      );
+      router
+        .push(
+          `/search?query=${encodeURIComponent(debouncedSearchTerm.trim())}`,
+          undefined,
+          { shallow: true }
+        )
+        .then(() => {
+          // Add a small delay to make loading indicator visible
+          setTimeout(() => {
+            setIsSearchLoading(false);
+          }, 400);
+        })
+        .catch(() => {
+          setIsSearchLoading(false);
+        });
     } else if (router.pathname === "/search") {
       // If we're on the search page, just update the URL without navigating
-      router.replace(
-        `/search?query=${encodeURIComponent(debouncedSearchTerm.trim())}`,
-        undefined,
-        { shallow: true }
-      );
+      setIsSearchLoading(true);
+      router
+        .replace(
+          `/search?query=${encodeURIComponent(debouncedSearchTerm.trim())}`,
+          undefined,
+          { shallow: true }
+        )
+        .then(() => {
+          // Add a small delay to make loading indicator visible
+          setTimeout(() => {
+            setIsSearchLoading(false);
+          }, 400);
+        })
+        .catch(() => {
+          setIsSearchLoading(false);
+        });
     }
   }, [debouncedSearchTerm, router]);
 
@@ -167,7 +192,18 @@ const Header = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      router.push(`/search?query=${encodeURIComponent(searchTerm.trim())}`);
+      setIsSearchLoading(true);
+      router
+        .push(`/search?query=${encodeURIComponent(searchTerm.trim())}`)
+        .then(() => {
+          // Add a small delay to make loading indicator visible
+          setTimeout(() => {
+            setIsSearchLoading(false);
+          }, 400);
+        })
+        .catch(() => {
+          setIsSearchLoading(false);
+        });
     } else if (router.pathname === "/search") {
       // Only go home if we're on search page and search is explicitly submitted empty
       router.push("/");
@@ -179,7 +215,18 @@ const Header = () => {
     setDebouncedSearchTerm("");
     // Only redirect to home if we're on the search page
     if (router.pathname === "/search") {
-      router.push("/");
+      setIsSearchLoading(true);
+      router
+        .push("/")
+        .then(() => {
+          // Add a small delay to make loading indicator visible
+          setTimeout(() => {
+            setIsSearchLoading(false);
+          }, 400);
+        })
+        .catch(() => {
+          setIsSearchLoading(false);
+        });
     }
   };
 
@@ -192,6 +239,35 @@ const Header = () => {
 
   return (
     <header className="sticky top-0 bg-white shadow-sm z-50">
+      {/* Loading Overlay - same style as ProductList */}
+      {isSearchLoading && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white p-5 rounded-lg shadow-lg flex items-center">
+            <svg
+              className="animate-spin h-5 w-5 mr-3 text-black"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            <span>Searching products...</span>
+          </div>
+        </div>
+      )}
+
       <nav className="max-w-full mx-14 px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
