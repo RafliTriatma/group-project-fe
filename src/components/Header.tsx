@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useAuth } from "@/contex/AuthContex";
@@ -13,6 +13,7 @@ import {
   FaClipboardList,
   FaUserCircle,
   FaMapMarkerAlt,
+  FaTimes,
 } from "react-icons/fa";
 import axiosInstance from "@/utils/axiosInstance";
 import CartIcon from "./CartIcon";
@@ -30,20 +31,72 @@ const Header = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
   const router = useRouter();
   const { isAuthenticated, user, logout } = useAuth();
   const { cart } = useCart();
   const { wishlist } = useWishlist();
   const profileRef = useRef<HTMLDivElement>(null);
+  const preventInitialRedirect = useRef(true);
 
   // Set initial searchTerm from URL query
   useEffect(() => {
-    const { query } = router.query;
-    if (query && typeof query === "string") {
-      setSearchTerm(decodeURIComponent(query));
+    if (router.isReady) {
+      const { query } = router.query;
+      if (query && typeof query === "string") {
+        setSearchTerm(decodeURIComponent(query));
+        setDebouncedSearchTerm(decodeURIComponent(query));
+        preventInitialRedirect.current = true; // Prevent redirect on mount
+      }
     }
-  }, [router.query]);
+  }, [router.isReady, router.query]);
+
+  // Debounce search term - don't navigate, just update the debounced value
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500); // 500ms delay
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [searchTerm]);
+
+  // Handle search when debounced term changes
+  useEffect(() => {
+    // Skip the first render
+    if (preventInitialRedirect.current) {
+      preventInitialRedirect.current = false;
+      return;
+    }
+
+    // Don't navigate if the search is empty
+    if (!debouncedSearchTerm.trim()) {
+      return;
+    }
+
+    // Only navigate if we're not already on the search page with the same query
+    const currentQuery = router.query.query;
+    if (
+      debouncedSearchTerm.trim() !== currentQuery &&
+      router.pathname !== "/search"
+    ) {
+      // Only perform search redirect if we're not already on the search page
+      router.push(
+        `/search?query=${encodeURIComponent(debouncedSearchTerm.trim())}`,
+        undefined,
+        { shallow: true }
+      );
+    } else if (router.pathname === "/search") {
+      // If we're on the search page, just update the URL without navigating
+      router.replace(
+        `/search?query=${encodeURIComponent(debouncedSearchTerm.trim())}`,
+        undefined,
+        { shallow: true }
+      );
+    }
+  }, [debouncedSearchTerm, router]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -115,6 +168,18 @@ const Header = () => {
     e.preventDefault();
     if (searchTerm.trim()) {
       router.push(`/search?query=${encodeURIComponent(searchTerm.trim())}`);
+    } else if (router.pathname === "/search") {
+      // Only go home if we're on search page and search is explicitly submitted empty
+      router.push("/");
+    }
+  };
+
+  const clearSearch = () => {
+    setSearchTerm("");
+    setDebouncedSearchTerm("");
+    // Only redirect to home if we're on the search page
+    if (router.pathname === "/search") {
+      router.push("/");
     }
   };
 
@@ -131,7 +196,7 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0">
-            <span className="text-2xl font-bold">LOGO</span>
+            <span className="text-2xl font-bold">KlikMart</span>
           </Link>
 
           {/* Search Bar */}
@@ -144,6 +209,15 @@ const Header = () => {
                 placeholder="Search for anything..."
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+              {searchTerm && (
+                <button
+                  type="button"
+                  onClick={clearSearch}
+                  className="absolute right-10 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <FaTimes />
+                </button>
+              )}
               <button
                 type="submit"
                 className="absolute right-3 top-1/2 transform -translate-y-1/2"
