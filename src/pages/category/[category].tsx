@@ -54,7 +54,7 @@ const CategoryPage = () => {
       <div>
         <Header />
         <div className="flex justify-center items-center h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
         </div>
         <Footer />
       </div>
@@ -73,7 +73,7 @@ const CategoryPage = () => {
             <p className="text-gray-500">No products found in this category</p>
             <button 
               onClick={() => router.push('/')}
-              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+              className="mt-4 px-4 py-2 bg-black text-white rounded transition-colors"
             >
               Back to Home
             </button>
