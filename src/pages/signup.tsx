@@ -169,138 +169,140 @@ const SignUpPage = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Header />
-      <main className="flex flex-1 items-center justify-center p-4">
-        <form
-          noValidate
-          onSubmit={handleSubmit}
-          className="bg-white p-8 shadow-lg rounded-md w-full max-w-md"
-        >
-          <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
-            Sign Up
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div>
-              <label
-                htmlFor="firstName"
-                className="block text-sm font-semibold text-gray-700"
-              >
-                First Name*
-              </label>
-              <input
-                type="text"
-                id="firstName"
-                name="firstName"
-                className="w-full mt-2 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
-                placeholder="First name"
-                value={firstName}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="lastName"
-                className="block text-sm font-semibold text-gray-700"
-              >
-                Last Name
-              </label>
-              <input
-                type="text"
-                id="lastName"
-                name="lastName"
-                className="w-full mt-2 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
-                placeholder="Last name"
-                value={lastName}
-                onChange={handleInputChange}
-              />
-            </div>
-          </div>
-
-          <div className="mb-6">
-            <label
-              htmlFor="email"
-              className="block text-sm font-semibold text-gray-700"
-            >
-              Email Address*
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              className="w-full mt-2 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
-              placeholder="Enter your email"
-              value={email}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-
-          <div className="mb-6">
-            <label
-              htmlFor="password"
-              className="block text-sm font-semibold text-gray-700"
-            >
-              Password*
-            </label>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                name="password"
-                className="w-full mt-2 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition pr-12"
-                placeholder="Enter your password"
-                value={password}
-                onChange={handleInputChange}
-                required
-              />
-              <button
-                type="button"
-                onClick={togglePasswordVisibility}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
-              >
-                {showPassword ? (
-                  <FaEye className="w-5 h-5" />
-                ) : (
-                  <FaEyeSlash className="w-5 h-5" />
-                )}
-              </button>
-            </div>
-            <p className="text-xs text-gray-500 mt-1">
-              Password must be at least 8 characters with 1 uppercase letter and
-              1 number
-            </p>
-          </div>
-
-          {error && (
-            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700">
-              <p className="font-medium">Error</p>
-              <p>{error}</p>
-            </div>
-          )}
-
-          <button
-            type="submit"
-            className="w-full py-3 bg-gray-950 text-white rounded-lg hover:bg-gray-900 transition font-semibold disabled:bg-gray-400"
-            disabled={loading}
+      <main className="flex flex-1 items-center justify-center p-4 sm:p-6 md:p-8">
+        <div className="w-full max-w-md">
+          <form
+            noValidate
+            onSubmit={handleSubmit}
+            className="bg-white p-5 sm:p-6 md:p-8 shadow-lg rounded-md w-full"
           >
-            {loading ? (
-              <div className="w-6 h-6 border-4 border-t-4 border-white rounded-full animate-spin mx-auto"></div>
-            ) : (
-              "Sign Up"
-            )}
-          </button>
+            <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-4 sm:mb-6 md:mb-8">
+              Sign Up
+            </h2>
 
-          <p className="text-sm text-gray-600 text-center mt-4">
-            Already have an account?{" "}
-            <Link
-              href="/login"
-              className="text-blue-600 hover:underline font-medium"
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
+              <div>
+                <label
+                  htmlFor="firstName"
+                  className="block text-sm font-semibold text-gray-700 mb-1"
+                >
+                  First Name*
+                </label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  className="w-full p-2 sm:p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition text-sm sm:text-base"
+                  placeholder="First name"
+                  value={firstName}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="lastName"
+                  className="block text-sm font-semibold text-gray-700 mb-1"
+                >
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  className="w-full p-2 sm:p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition text-sm sm:text-base"
+                  placeholder="Last name"
+                  value={lastName}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+
+            <div className="mb-4 sm:mb-6">
+              <label
+                htmlFor="email"
+                className="block text-sm font-semibold text-gray-700 mb-1"
+              >
+                Email Address*
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                className="w-full p-2 sm:p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition text-sm sm:text-base"
+                placeholder="Enter your email"
+                value={email}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+
+            <div className="mb-4 sm:mb-6">
+              <label
+                htmlFor="password"
+                className="block text-sm font-semibold text-gray-700 mb-1"
+              >
+                Password*
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  name="password"
+                  className="w-full p-2 sm:p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition pr-10 sm:pr-12 text-sm sm:text-base"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={handleInputChange}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                >
+                  {showPassword ? (
+                    <FaEye className="w-4 h-4 sm:w-5 sm:h-5" />
+                  ) : (
+                    <FaEyeSlash className="w-4 h-4 sm:w-5 sm:h-5" />
+                  )}
+                </button>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                Password must be at least 8 characters with 1 uppercase letter and
+                1 number
+              </p>
+            </div>
+
+            {error && (
+              <div className="mb-4 sm:mb-6 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 text-xs sm:text-sm">
+                <p className="font-medium">Error</p>
+                <p>{error}</p>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="w-full py-2 sm:py-3 bg-gray-950 text-white rounded-lg hover:bg-gray-900 transition font-semibold disabled:bg-gray-400 text-sm sm:text-base"
+              disabled={loading}
             >
-              Login
-            </Link>
-          </p>
-        </form>
+              {loading ? (
+                <div className="w-5 h-5 sm:w-6 sm:h-6 border-2 sm:border-4 border-t-2 sm:border-t-4 border-white rounded-full animate-spin mx-auto"></div>
+              ) : (
+                "Sign Up"
+              )}
+            </button>
+
+            <p className="text-xs sm:text-sm text-gray-600 text-center mt-4">
+              Already have an account?{" "}
+              <Link
+                href="/login"
+                className="text-blue-600 hover:underline font-medium"
+              >
+                Login
+              </Link>
+            </p>
+          </form>
+        </div>
       </main>
       <Footer />
     </div>

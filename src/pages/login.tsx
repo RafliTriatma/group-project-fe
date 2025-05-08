@@ -59,94 +59,96 @@ const LoginPage = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Header />
-      <main className="flex flex-1 items-center justify-center p-4">
-        <form
-          onSubmit={handleLogin}
-          className="bg-white p-8 shadow-lg rounded-md w-full max-w-md"
-        >
-          <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
-            Login
-          </h2>
+      <main className="flex flex-1 items-center justify-center p-4 sm:p-6 md:p-8">
+        <div className="w-full max-w-md">
+          <form
+            onSubmit={handleLogin}
+            className="bg-white p-5 sm:p-6 md:p-8 shadow-lg rounded-md w-full"
+          >
+            <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-4 sm:mb-6 md:mb-8">
+              Login
+            </h2>
 
-          <div className="mb-6">
-            <label
-              htmlFor="email"
-              className="block text-sm font-semibold text-gray-700"
-            >
-              Email Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              className="w-full mt-2 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
-              placeholder="Enter your email"
-              value={email}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          <div className="mb-6">
-            <label
-              htmlFor="password"
-              className="block text-sm font-semibold text-gray-700"
-            >
-              Password
-            </label>
-            <div className="relative">
+            <div className="mb-4 sm:mb-6">
+              <label
+                htmlFor="email"
+                className="block text-sm font-semibold text-gray-700 mb-1"
+              >
+                Email Address
+              </label>
               <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                name="password"
-                className="w-full mt-2 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition pr-12"
-                placeholder="Enter your password"
-                value={password}
+                type="email"
+                id="email"
+                name="email"
+                className="w-full p-2 sm:p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition text-sm sm:text-base"
+                placeholder="Enter your email"
+                value={email}
                 onChange={handleInputChange}
               />
-              <button
-                type="button"
-                onClick={togglePasswordVisibility}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+            </div>
+
+            <div className="mb-4 sm:mb-6">
+              <label
+                htmlFor="password"
+                className="block text-sm font-semibold text-gray-700 mb-1"
               >
-                {showPassword ? (
-                  <FaEye className="w-5 h-5" />
-                ) : (
-                  <FaEyeSlash className="w-5 h-5" />
-                )}
-              </button>
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  name="password"
+                  className="w-full p-2 sm:p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition pr-10 sm:pr-12 text-sm sm:text-base"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={handleInputChange}
+                />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                >
+                  {showPassword ? (
+                    <FaEye className="w-4 h-4 sm:w-5 sm:h-5" />
+                  ) : (
+                    <FaEyeSlash className="w-4 h-4 sm:w-5 sm:h-5" />
+                  )}
+                </button>
+              </div>
             </div>
-          </div>
 
-          {/* Error message dengan styling yang lebih baik */}
-          {error && (
-            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700">
-              <p className="font-medium">Error</p>
-              <p>{error}</p>
-            </div>
-          )}
-
-          <button
-            type="submit"
-            className="w-full py-3 bg-gray-950 text-white rounded-lg hover:bg-gray-900 transition font-semibold disabled:bg-gray-400"
-            disabled={loading}
-          >
-            {loading ? (
-              <div className="w-6 h-6 border-4 border-t-4 border-white rounded-full animate-spin mx-auto"></div>
-            ) : (
-              "Login"
+            {/* Error message dengan styling yang lebih baik */}
+            {error && (
+              <div className="mb-4 sm:mb-6 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 text-xs sm:text-sm">
+                <p className="font-medium">Error</p>
+                <p>{error}</p>
+              </div>
             )}
-          </button>
 
-          <p className="text-sm text-gray-600 text-center mt-4">
-            Don't have an account?{" "}
-            <Link
-              href="/signup"
-              className="text-blue-600 hover:underline font-medium"
+            <button
+              type="submit"
+              className="w-full py-2 sm:py-3 bg-gray-950 text-white rounded-lg hover:bg-gray-900 transition font-semibold disabled:bg-gray-400 text-sm sm:text-base"
+              disabled={loading}
             >
-              Sign Up
-            </Link>
-          </p>
-        </form>
+              {loading ? (
+                <div className="w-5 h-5 sm:w-6 sm:h-6 border-2 sm:border-4 border-t-2 sm:border-t-4 border-white rounded-full animate-spin mx-auto"></div>
+              ) : (
+                "Login"
+              )}
+            </button>
+
+            <p className="text-xs sm:text-sm text-gray-600 text-center mt-4">
+              Don't have an account?{" "}
+              <Link
+                href="/signup"
+                className="text-blue-600 hover:underline font-medium"
+              >
+                Sign Up
+              </Link>
+            </p>
+          </form>
+        </div>
       </main>
       <Footer />
     </div>

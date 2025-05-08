@@ -413,103 +413,106 @@ const ProductList: React.FC<Props> = ({ products }) => {
       )}
 
       {/* Product Grid - add id for scroll reference */}
-      <div id="product-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mx-auto">
-        {visibleProducts.map((product) => {
-          const promoLabel = getRandomPromoLabel(product.id);
-          const { rating, count } = getRandomRating(product.id);
-          const isWishlisted = isInWishlist(product.id);
+      <div id="product-grid" className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 lg:gap-6 px-2 sm:px-4 md:px-6 max-w-7xl mx-auto">
+  {visibleProducts.map((product) => {
+    const promoLabel = getRandomPromoLabel(product.id);
+    const { rating, count } = getRandomRating(product.id);
+    const isWishlisted = isInWishlist(product.id);
+    
+    return (
+      <Link
+        href={`/product/${product.id}`}
+        key={product.id}
+        className="group bg-white rounded-lg overflow-hidden hover:shadow-lg sm:hover:shadow-xl transition-all duration-300 flex flex-col h-full border border-gray-100"
+      >
+        {/* Product Image Container */}
+        <div className="relative aspect-square overflow-hidden">
+          <img
+            src={product.images[0] || "/placeholder.svg"}
+            alt={product.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            loading="lazy"
+          />
           
-          return (
-            <Link
-              href={`/product/${product.id}`}
-              key={product.id}
-              className="group bg-white rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col"
-            >
-              {/* Product Image Container */}
-              <div className="relative aspect-square overflow-hidden">
-                <img
-                  src={product.images[0] || "/placeholder.svg"}
-                  alt={product.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  loading="lazy" // Add native lazy loading
-                />
-                
-                {/* Conditional Promo Label */}
-                {promoLabel && (
-                  <div className="absolute top-2 left-2">
-                    <span className={`${promoLabel.bgColor} text-white text-xs px-2 py-1 rounded`}>
-                      {promoLabel.text}
-                    </span>
-                  </div>
+          {/* Conditional Promo Label */}
+          {promoLabel && (
+            <div className="absolute top-1 sm:top-2 left-1 sm:left-2">
+              <span className={`${promoLabel.bgColor} text-white text-xs px-1.5 py-0.5 sm:px-2 sm:py-1 rounded text-xs sm:text-sm`}>
+                {promoLabel.text}
+              </span>
+            </div>
+          )}
+
+          {/* Wishlist Button - Always visible */}
+          <button 
+            onClick={(e) => {
+              e.preventDefault();
+              handleToggleWishlist(product);
+            }}
+            className="absolute top-1 sm:top-2 right-1 sm:right-2 bg-white rounded-full p-1 sm:p-1.5 shadow-sm hover:bg-gray-100"
+            aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          >
+            {isWishlisted ? (
+              <FaHeart className="h-3 w-3 xs:h-4 xs:w-4 sm:h-5 sm:w-5 text-red-500" />
+            ) : (
+              <FaRegHeart className="h-3 w-3 xs:h-4 xs:w-4 sm:h-5 sm:w-5 text-gray-600" />
+            )}
+          </button>
+        </div>
+
+        <div className="p-2 sm:p-3 md:p-4 flex flex-col flex-grow">
+          {/* Rating stars - hidden on smallest screens */}
+          <div className="hidden sm:flex items-center mb-1 sm:mb-2">
+            <div className="flex text-yellow-400">
+              {renderStars(rating)}
+            </div>
+            <span className="text-xs text-gray-500 ml-1 sm:ml-2">({count})</span>
+          </div>
+
+          <h2 className="font-medium text-xs sm:text-sm text-gray-900 mb-1 sm:mb-2 line-clamp-2 h-8 sm:h-10">
+            {product.title}
+          </h2>
+
+          {/* Category badge - hidden on smallest screens */}
+          <div className="hidden sm:flex items-center mb-1 sm:mb-2">
+            <span className="text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full truncate max-w-full">
+              {product.category.name}
+            </span>
+          </div>
+
+          <div className="mt-auto pt-2">
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <p className="text-base sm:text-lg font-bold text-gray-900">
+                  ${product.price.toFixed(2)}
+                </p>
+                {/* Show original price if there's a discount label */}
+                {promoLabel && promoLabel.text.includes("OFF") && (
+                  <p className="text-xs text-gray-500 line-through">
+                    ${(product.price * 1.2).toFixed(2)}
+                  </p>
                 )}
-
-                {/* Wishlist Button */}
-                <button 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleToggleWishlist(product);
-                  }}
-                  className="absolute top-2 right-2 bg-white rounded-full p-1.5 shadow-sm z-100 hover:bg-gray-100"
-                >
-                  {isWishlisted ? (
-                    <FaHeart className="h-5 w-5 text-red-500" />
-                  ) : (
-                    <FaRegHeart className="h-5 w-5 text-gray-600" />
-                  )}
-                </button>
               </div>
+            </div>
 
-              <div className="p-4 flex flex-col flex-grow">
-                <div className="flex items-center mb-2">
-                  <div className="flex text-yellow-400">
-                    {renderStars(rating)}
-                  </div>
-                  <span className="text-xs text-gray-500 ml-2">({count})</span>
-                </div>
-
-                <h2 className="font-medium text-sm text-gray-900 mb-2 line-clamp-2">
-                  {product.title}
-                </h2>
-
-                <div className="flex items-center mb-2">
-                  <span className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
-                    {product.category.name}
-                  </span>
-                </div>
-
-                <div className="mt-auto">
-                  <div className="flex items-center justify-between mb-3">
-                    <div>
-                      <p className="text-lg font-bold text-gray-900">
-                        ${product.price.toFixed(2)}
-                      </p>
-                      {/* Show original price if there's a discount label */}
-                      {promoLabel && promoLabel.text.includes("OFF") && (
-                        <p className="text-xs text-gray-500 line-through">
-                          ${(product.price * 1.2).toFixed(2)}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleAddToCart(product);
-                    }}
-                    className="w-full bg-black hover:bg-gray-800 text-white py-2 px-4 rounded-md transition duration-200 flex items-center justify-center gap-2"
-                  >
-                    <MdOutlineShoppingCartCheckout />
-                    <span className="text-sm">
-                      {isAuthenticated ? "Add to Cart" : "Login to Add"}
-                    </span>
-                  </button>
-                </div>
-              </div>
-            </Link>
-          );
-        })}
-      </div>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                handleAddToCart(product);
+              }}
+              className="w-full bg-black hover:bg-gray-800 text-white py-1 xs:py-1.5 sm:py-2 px-1 xs:px-2 sm:px-4 rounded-md transition duration-200 flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm"
+            >
+              <MdOutlineShoppingCartCheckout className="text-base sm:text-lg" />
+              <span className="hidden sm:inline">
+                {isAuthenticated ? "Add to Cart" : "Login to Add"}
+              </span>
+            </button>
+          </div>
+        </div>
+      </Link>
+    );
+  })}
+</div>
 
       {/* Choose between Load More or Pagination */}
       <div className="mt-8 flex flex-col items-center">
