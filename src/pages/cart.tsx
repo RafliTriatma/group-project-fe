@@ -7,6 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { toast } from "react-toastify";
 import { Modal, Box, Typography } from "@mui/material";
+import { validateCoupon } from "@/utils/coupons";
 
 const CartPage = () => {
   const { cart, total, setQuantity, removeFromCart, clearCart } = useCart();
@@ -16,6 +17,8 @@ const CartPage = () => {
   const [open, setOpen] = useState(false);
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
+  const [appliedCoupon, setAppliedCoupon] = useState("");
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -23,28 +26,74 @@ const CartPage = () => {
   const handleQuantityChange = (productId: number, newQuantity: number) => {
     if (newQuantity < 1) return;
     setQuantity(productId, newQuantity);
+    
+    // Revalidate coupon when quantity changes
+    if (appliedCoupon) {
+      const result = validateCoupon(appliedCoupon, total);
+      if (!result.isValid) {
+        setDiscount(0);
+        setAppliedCoupon("");
+        toast.error(result.message);
+      } else {
+        setDiscount(result.discount);
+      }
+    }
   };
 
   const handleRemoveItem = (productId: number) => {
     removeFromCart(productId);
     toast.success("Item removed from cart");
+    
+    // Revalidate coupon when item is removed
+    if (appliedCoupon) {
+      const result = validateCoupon(appliedCoupon, total);
+      if (!result.isValid) {
+        setDiscount(0);
+        setAppliedCoupon("");
+        toast.error(result.message);
+      } else {
+        setDiscount(result.discount);
+      }
+    }
   };
 
   const handlePurchase = async () => {
-    // Navigate to the checkout page
     router.push("/checkout");
   };
 
   const handleApplyCoupon = () => {
+    if (isApplyingCoupon) return;
+    
     if (couponCode.trim() === "") {
       toast.error("Please enter a coupon code");
       return;
     }
-    
-    // In a real app, you would validate the coupon with your backend
-    // For demo purposes, we'll just apply a fixed discount
-    setDiscount(24);
-    toast.success("Coupon applied successfully!");
+
+    setIsApplyingCoupon(true);
+
+    try {
+      // Validate the coupon
+      const result = validateCoupon(couponCode, total);
+
+      if (result.isValid) {
+        setDiscount(result.discount);
+        setAppliedCoupon(couponCode);
+        toast.success(result.message);
+        setCouponCode(""); // Clear the input
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error) {
+      toast.error("Error applying coupon");
+    } finally {
+      setIsApplyingCoupon(false);
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setDiscount(0);
+    setAppliedCoupon("");
+    toast.success("Coupon removed");
   };
 
   // Calculate tax (for demo purposes, 8% of subtotal)
@@ -244,8 +293,17 @@ const CartPage = () => {
                 </div>
                 
                 {discount > 0 && (
-                  <div className="flex justify-between text-xs sm:text-sm">
-                    <span className="text-gray-600">Discount</span>
+                  <div className="flex justify-between items-center text-xs sm:text-sm">
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-600">Discount</span>
+                      <span className="text-xs text-blue-600">({appliedCoupon})</span>
+                      <button
+                        onClick={handleRemoveCoupon}
+                        className="text-red-500 hover:text-red-600 text-xs"
+                      >
+                        Remove
+                      </button>
+                    </div>
                     <span className="font-medium text-green-600">-${discount.toFixed(2)}</span>
                   </div>
                 )}
@@ -264,24 +322,40 @@ const CartPage = () => {
               </div>
               
               {/* Coupon code */}
-              <div className="mb-4 sm:mb-6">
-                <h3 className="text-xs sm:text-sm font-medium mb-2">Coupon Code</h3>
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-0">
-                  <input
-                    type="text"
-                    value={couponCode}
-                    onChange={(e) => setCouponCode(e.target.value)}
-                    placeholder="Enter coupon code"
-                    className="w-full border border-gray-300 px-3 py-2 sm:rounded-l-md sm:rounded-r-none rounded-md text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
-                  />
-                  <button
-                    onClick={handleApplyCoupon}
-                    className="bg-black text-white px-4 py-2 rounded-md sm:rounded-l-none sm:rounded-r-md text-xs sm:text-sm hover:bg-gray-800 transition-colors"
-                  >
-                    APPLY
-                  </button>
+              {!appliedCoupon && (
+                <div className="mb-4 sm:mb-6">
+                  <h3 className="text-xs sm:text-sm font-medium mb-2">Coupon Code</h3>
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-0">
+                    <input
+                      type="text"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value)}
+                      placeholder="Enter coupon code"
+                      className="w-full border border-gray-300 px-3 py-2 sm:rounded-l-md sm:rounded-r-none rounded-md text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black uppercase"
+                      disabled={isApplyingCoupon}
+                    />
+                    <button
+                      onClick={handleApplyCoupon}
+                      disabled={isApplyingCoupon}
+                      className="bg-black text-white px-4 py-2 rounded-md sm:rounded-l-none sm:rounded-r-md text-xs sm:text-sm hover:bg-gray-800 transition-colors disabled:bg-gray-400 flex items-center justify-center min-w-[80px]"
+                    >
+                      {isApplyingCoupon ? (
+                        <span className="flex items-center">
+                          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                        </span>
+                      ) : (
+                        "APPLY"
+                      )}
+                    </button>
+                  </div>
+                  <p className="mt-2 text-xs text-gray-500">
+                    Try these codes: WELCOME10, SAVE20, FLAT25, SUMMER30
+                  </p>
                 </div>
-              </div>
+              )}
               
               {/* Proceed to checkout button */}
               <button
