@@ -367,8 +367,8 @@ const ProductList: React.FC<Props> = ({ products }) => {
             className="flex items-center gap-2 text-sm bg-white border border-gray-300 rounded-md px-4 py-2 focus:outline-none"
           >
             <BiSortAlt2 className="text-gray-500" />
-            <span>Sort by: </span>
-            <span className="font-medium">
+            <span className="hidden sm:inline">Sort by: </span>
+            <span className="hidden sm:inline font-medium">
               {sortOptions.find(option => option.value === sortBy)?.label}
             </span>
           </button>
