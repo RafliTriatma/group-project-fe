@@ -417,30 +417,30 @@ export default function ProductPage() {
         </div>
 
         {/* Product Tabs Section */}
-        <div className="mt-8 sm:mt-12">
+        <div className="mt-6 sm:mt-8 lg:mt-12">
           <ProductTabs tabs={tabs} defaultTabId="description">
             {(activeTabId: string) => (
-              <div className="mt-6">
+              <div className="mt-4 sm:mt-6">
                 {activeTabId === 'description' && (
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-12">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-12">
                     <div className="lg:col-span-2 space-y-4">
                       <h3 className="text-lg font-medium">Description</h3>
                       <div className="prose prose-sm sm:prose max-w-none text-gray-600">
-                        <p>{product.description}</p>
+                        <p className="text-sm sm:text-base">{product.description}</p>
                       </div>
                     </div>
                     
-                    <div className="space-y-8">
+                    <div className="space-y-6 sm:space-y-8">
                       <div>
-                        <h3 className="text-lg font-medium mb-4">Features</h3>
-                        <div className="bg-white rounded-lg p-4 shadow-sm">
+                        <h3 className="text-lg font-medium mb-3 sm:mb-4">Features</h3>
+                        <div className="bg-white rounded-lg p-3 sm:p-4 shadow-sm">
                           <ProductFeatures features={productFeatures} />
                         </div>
                       </div>
                       
                       <div>
-                        <h3 className="text-lg font-medium mb-4">Shipping Information</h3>
-                        <div className="bg-white rounded-lg p-4 shadow-sm">
+                        <h3 className="text-lg font-medium mb-3 sm:mb-4">Shipping Information</h3>
+                        <div className="bg-white rounded-lg p-3 sm:p-4 shadow-sm">
                           <ShippingInfo options={shippingOptions} />
                         </div>
                       </div>
@@ -450,9 +450,9 @@ export default function ProductPage() {
                 
                 {activeTabId === 'additional' && (
                   <div>
-                    <h3 className="text-lg font-medium mb-4">Additional Information</h3>
+                    <h3 className="text-lg font-medium mb-3 sm:mb-4">Additional Information</h3>
                     <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-                      <div className="overflow-x-auto">
+                      <div className="overflow-x-auto -mx-4 sm:mx-0">
                         <table className="min-w-full divide-y divide-gray-200">
                           <tbody className="divide-y divide-gray-200">
                             <tr>
@@ -480,17 +480,17 @@ export default function ProductPage() {
                 
                 {activeTabId === 'specification' && (
                   <div>
-                    <h3 className="text-lg font-medium mb-4">Specification</h3>
-                    <div className="bg-white rounded-lg p-6 shadow-sm">
+                    <h3 className="text-lg font-medium mb-3 sm:mb-4">Specification</h3>
+                    <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div>
-                          <h4 className="font-medium text-gray-900 mb-2">Technical Details</h4>
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-gray-900">Technical Details</h4>
                           <p className="text-sm sm:text-base text-gray-600">
                             Detailed specifications for {product.title} would be listed here.
                           </p>
                         </div>
-                        <div>
-                          <h4 className="font-medium text-gray-900 mb-2">Product Dimensions</h4>
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-gray-900">Product Dimensions</h4>
                           <p className="text-sm sm:text-base text-gray-600">
                             Product dimensions and weight information would be displayed here.
                           </p>
@@ -502,10 +502,10 @@ export default function ProductPage() {
                 
                 {activeTabId === 'review' && (
                   <div>
-                    <h3 className="text-lg font-medium mb-4">Reviews</h3>
-                    <div className="bg-white rounded-lg p-6 shadow-sm text-center">
-                      <p className="text-sm sm:text-base text-gray-600">No reviews available for this product yet.</p>
-                      <button className="mt-4 inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                    <h3 className="text-lg font-medium mb-3 sm:mb-4">Reviews</h3>
+                    <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm text-center">
+                      <p className="text-sm sm:text-base text-gray-600 mb-4">No reviews available for this product yet.</p>
+                      <button className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
                         Write a Review
                       </button>
                     </div>

@@ -16,3 +16,12 @@ export default {
   },
   plugins: [],
 } satisfies Config;
+
+// Add global styles to your CSS (e.g., in globals.css)
+// .scrollbar-hide {
+//   -ms-overflow-style: none;  /* IE and Edge */
+//   scrollbar-width: none;     /* Firefox */
+// }
+// .scrollbar-hide::-webkit-scrollbar {
+//   display: none;             /* Chrome, Safari and Opera */
+// }

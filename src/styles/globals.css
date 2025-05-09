@@ -2,6 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom scrollbar hiding utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari and Opera */
+}
+
+/* Custom styles for active tab indicator */
+.tab-indicator {
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  height: 2px;
+  background-color: #3b82f6; /* blue-500 */
+  transition: all 0.2s ease-in-out;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
