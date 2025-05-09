@@ -282,95 +282,93 @@ const Header = () => {
             </form>
           </div>
 
-          {/* Right Icons - Hidden on auth pages in mobile view */}
-          {!isAuthPage() && (
-            <div className="flex items-center space-x-4">
-              <CartIcon />
-              {/* <WishlistIcon /> */}
+          {/* Right Icons - Hidden on mobile auth pages, visible on iPad/desktop */}
+          <div className={`${isAuthPage() ? 'hidden sm:flex' : 'flex'} items-center space-x-4`}>
+            <CartIcon />
+            {/* <WishlistIcon /> */}
 
-              {/* Profile Icon with Dropdown */}
-              <div className="relative" ref={profileRef}>
-                <button
-                  onClick={toggleProfileDropdown}
-                  className="flex items-center focus:outline-none"
-                >
-                  {isAuthenticated ? (
-                    <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-gray-200">
-                        <img
-                          src={defaultProfilePic}
-                          alt="Profile"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <span className="text-sm font-medium hidden md:inline-block">
-                        {user?.firstName || "Hi, User"}
-                      </span>
+            {/* Profile Icon with Dropdown */}
+            <div className="relative" ref={profileRef}>
+              <button
+                onClick={toggleProfileDropdown}
+                className="flex items-center focus:outline-none"
+              >
+                {isAuthenticated ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-gray-200">
+                      <img
+                        src={defaultProfilePic}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
                     </div>
-                  ) : (
-                    <FaUser className="h-6 w-6 text-gray-600" />
-                  )}
-                </button>
-
-                {isProfileOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                    {isAuthenticated ? (
-                      <>
-                        <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-100 flex items-center">
-                          <div className="w-8 h-8 rounded-full overflow-hidden mr-2">
-                            <img
-                              src={defaultProfilePic}
-                              alt="Profile"
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <div className="font-medium">
-                            {user?.firstName
-                              ? `${user.firstName} ${user.lastName || ""}`
-                              : "Welcome!"}
-                          </div>
-                        </div>
-                        <Link href="/profile">
-                          <div className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <FaUserCircle className="mr-2" /> Profile
-                          </div>
-                        </Link>
-                        <Link href="/orders">
-                          <div className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <FaClipboardList className="mr-2" /> My Orders
-                          </div>
-                        </Link>
-                        <Link href="/wishlist">
-                          <div className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <FaHeart className="mr-2" /> My Wishlist
-                          </div>
-                        </Link>
-                        <button
-                          onClick={handleLogout}
-                          className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        >
-                          <FaSignOutAlt className="mr-2" /> Logout
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <Link href="/login">
-                          <div className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            Login
-                          </div>
-                        </Link>
-                        <Link href="/signup">
-                          <div className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            Sign Up
-                          </div>
-                        </Link>
-                      </>
-                    )}
+                    <span className="text-sm font-medium hidden md:inline-block">
+                      {user?.firstName || "Hi, User"}
+                    </span>
                   </div>
+                ) : (
+                  <FaUser className="h-6 w-6 text-gray-600" />
                 )}
-              </div>
+              </button>
+
+              {isProfileOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                  {isAuthenticated ? (
+                    <>
+                      <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-100 flex items-center">
+                        <div className="w-8 h-8 rounded-full overflow-hidden mr-2">
+                          <img
+                            src={defaultProfilePic}
+                            alt="Profile"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="font-medium">
+                          {user?.firstName
+                            ? `${user.firstName} ${user.lastName || ""}`
+                            : "Welcome!"}
+                        </div>
+                      </div>
+                      <Link href="/profile">
+                        <div className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                          <FaUserCircle className="mr-2" /> Profile
+                        </div>
+                      </Link>
+                      <Link href="/orders">
+                        <div className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                          <FaClipboardList className="mr-2" /> My Orders
+                        </div>
+                      </Link>
+                      <Link href="/wishlist">
+                        <div className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                          <FaHeart className="mr-2" /> My Wishlist
+                        </div>
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <FaSignOutAlt className="mr-2" /> Logout
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link href="/login">
+                        <div className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                          Login
+                        </div>
+                      </Link>
+                      <Link href="/signup">
+                        <div className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                          Sign Up
+                        </div>
+                      </Link>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
 
         {/* Categories and Links - Only show if not on login/signup pages */}
