@@ -5,6 +5,7 @@ import ProductList from "@/components/ProductList";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import axiosInstance from "@/utils/axiosInstance";
+import Head from "next/head";
 
 interface Category {
   id: number;
@@ -95,6 +96,10 @@ const HomePage = ({ initialCategories }: { initialCategories: Category[] }) => {
 
   return (
     <div>
+      <Head>
+        <title>KlikMart - Home | Shop the Latest Products</title>
+        <meta name="description" content="Discover amazing products at KlikMart. Shop electronics, fashion, home goods and more with great deals and fast shipping." />
+      </Head>
       <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <ProductList products={filteredProducts} />
