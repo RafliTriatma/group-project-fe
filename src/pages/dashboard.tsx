@@ -1,4 +1,4 @@
-import Header from "@/components/dashboard/layout/Header";
+import Header from "@/components/dashboard/layout/HeaderDashboard";
 import Sidebar from "@/components/dashboard/layout/Sidebar";
 
 export default function DashboardPage() {

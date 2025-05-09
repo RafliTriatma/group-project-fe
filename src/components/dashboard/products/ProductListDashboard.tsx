@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Filter, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Product } from "@/types"
+import { Product } from "@/types/product"
 
 export default function ProductList() {
   const [products, setProducts] = useState<Product[]>([

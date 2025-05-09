@@ -1,4 +1,4 @@
-import Header from "@/components/dashboard/layout/Header";
+import Header from "@/components/dashboard/layout/HeaderDashboard";
 import Sidebar from "@/components/dashboard/layout/Sidebar";
 import { Button } from "@/components/ui/button";
 import { Ulasan, UlasanFilter } from "@/types/product";

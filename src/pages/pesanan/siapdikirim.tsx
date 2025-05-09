@@ -1,5 +1,5 @@
 import React from "react";
-import Header from "@/components/dashboard/layout/Header";
+import HeaderDasboard from "@/components/dashboard/layout/HeaderDashboard";
 import Sidebar from "@/components/dashboard/layout/Sidebar";
 import OrderTabs from "@/components/dashboard/layout/OrderTabs";
 import { useRouter } from "next/router";
@@ -52,7 +52,7 @@ export default function SiapDiKirim() {
 
   return (
     <div className="h-screen overflow-hidden flex flex-col">
-      <Header />
+      <HeaderDasboard />
       <div className="flex flex-col sm:flex-row min-h-screen">
         <Sidebar />
         <div className="flex-1 p-6 bg-gray-100">

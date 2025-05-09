@@ -1,4 +1,4 @@
-import Header from "@/components/dashboard/layout/Header";
+import HeaderDasboard from "@/components/dashboard/layout/HeaderDashboard";
 import Sidebar from "@/components/dashboard/layout/Sidebar";
 import { Button } from "@/components/ui/button";
 import { Iklan, IklanFilters } from "@/types/product";
@@ -107,7 +107,7 @@ export default function ListPromo() {
 
   return (
     <div className="h-screen overflow-hidden flex flex-col">
-      <Header />
+      <HeaderDasboard />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
         <div className="flex-1 p-6 overflow-hidden">

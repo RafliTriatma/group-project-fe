@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Product } from "@/types"
+import { Product } from "@/types/product"
 
 interface ProductFormProps {
   initialData?: Product
