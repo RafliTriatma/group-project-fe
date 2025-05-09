@@ -43,6 +43,14 @@ export interface UlasanFilter {
   namaProduk: string;
 }
 
+export interface UlasanInbox {
+  id: number;
+  namaProduk: string;
+  idPesanan: string;
+  ulasan: string;
+}
+
+
 export interface Promo {
   id: number;
   title: string;
