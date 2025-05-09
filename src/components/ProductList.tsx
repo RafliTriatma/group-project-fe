@@ -437,7 +437,7 @@ const ProductList: React.FC<Props> = ({ products }) => {
           {/* Conditional Promo Label */}
           {promoLabel && (
             <div className="absolute top-1 sm:top-2 left-1 sm:left-2">
-              <span className={`${promoLabel.bgColor} text-white text-xs px-1.5 py-0.5 sm:px-2 sm:py-1 rounded text-xs sm:text-sm`}>
+              <span className={`${promoLabel.bgColor} text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded text-xs sm:text-sm`}>
                 {promoLabel.text}
               </span>
             </div>
