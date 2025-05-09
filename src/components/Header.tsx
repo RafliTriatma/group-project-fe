@@ -41,6 +41,11 @@ const Header = () => {
   const profileRef = useRef<HTMLDivElement>(null);
   const preventInitialRedirect = useRef(true);
 
+  // Add a function to check if we're on auth pages
+  const isAuthPage = () => {
+    return router.pathname === '/login' || router.pathname === '/signup';
+  };
+
   // Set initial searchTerm from URL query
   useEffect(() => {
     if (router.isReady) {
@@ -363,70 +368,60 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Categories and Links */}
-        <div className="flex items-center justify-between mt-4">
-          <div className="flex items-center space-x-4">
-            <div className="relative">
-              <button
-                className="flex items-center space-x-2 px-4 py-2 bg-gray-100 rounded-md"
-                onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-              >
-                <span>All Category</span>
-                <svg
-                  className={`w-4 h-4 transition-transform duration-200 ${
-                    isCategoryOpen ? "rotate-180" : ""
-                  }`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+        {/* Categories and Links - Only show if not on login/signup pages */}
+        {!isAuthPage() && (
+          <div className="flex items-center justify-between mt-4">
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <button
+                  className="flex items-center space-x-2 px-4 py-2 bg-gray-100 rounded-md"
+                  onClick={() => setIsCategoryOpen(!isCategoryOpen)}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </button>
-
-              {isCategoryOpen && (
-                <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                  <button
-                    onClick={() => handleCategorySelect(null)}
-                    className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
+                  <span>All Category</span>
+                  <svg
+                    className={`w-4 h-4 transition-transform duration-200 ${
+                      isCategoryOpen ? "rotate-180" : ""
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    All Products
-                  </button>
-                  {categories.map((category) => (
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+
+                {isCategoryOpen && (
+                  <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-md shadow-lg py-1 z-50">
                     <button
-                      key={category.id}
-                      onClick={() => handleCategorySelect(category.id)}
+                      onClick={() => handleCategorySelect(null)}
                       className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
                     >
-                      {category.name}
+                      All Products
                     </button>
-                  ))}
-                </div>
-              )}
+                    {categories.map((category) => (
+                      <button
+                        key={category.id}
+                        onClick={() => handleCategorySelect(category.id)}
+                        className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
+                      >
+                        {category.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
-            {/* <Link href="/orders" className="text-gray-600 hover:text-gray-900">
-              Track Order
-            </Link> */}
-            {/* <Link href="/compare" className="text-gray-600 hover:text-gray-900">
-              Compare
-            </Link>
-            <Link href="/support" className="text-gray-600 hover:text-gray-900">
-              Customer Support
-            </Link>
-            <Link href="/help" className="text-gray-600 hover:text-gray-900">
-              Need Help
-            </Link> */}
+            <div className="text-gray-600 flex items-center">
+              <FaMapMarkerAlt className="mr-1" />
+              <span>Jakarta</span>
+            </div>
           </div>
-          <div className="text-gray-600 flex items-center">
-            <FaMapMarkerAlt className="mr-1" />
-            <span>Jakarta</span>
-          </div>
-        </div>
+        )}
       </nav>
     </header>
   );
