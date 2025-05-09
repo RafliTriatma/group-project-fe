@@ -243,7 +243,7 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo - Hidden on mobile screens */}
           <Link href="/" className="flex-shrink-0 hidden sm:block">
-            <span className="text-2xl font-bold">LOGO</span>
+            <span className="text-2xl font-bold">KlikMart</span>
           </Link>
 
           {/* Search Bar */}
