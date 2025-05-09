@@ -159,9 +159,9 @@ const ProfilePage = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 mb-4 text-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+        {/* Breadcrumb - Hidden on mobile */}
+        <div className="hidden sm:flex items-center gap-2 mb-4 text-sm">
           <Link href="/" className="text-gray-500 hover:text-gray-700">
             Home
           </Link>
@@ -169,87 +169,58 @@ const ProfilePage = () => {
           <span className="text-gray-800">My Account</span>
         </div>
 
-        <h1 className="text-2xl font-bold mb-8">My Account</h1>
+        <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-8">My Account</h1>
 
-        <div className="flex flex-col md:flex-row gap-6">
-          {/* Sidebar */}
-          <div className="md:w-1/4">
-            <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 rounded-full bg-gray-200 overflow-hidden">
+        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8">
+          {/* Sidebar - Collapsible on mobile */}
+          <div className="lg:w-1/4">
+            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 sm:mb-6">
+              {/* Profile Summary */}
+              <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
                   <img
                     src={profile.avatar}
                     alt={`${profile.firstName} ${profile.lastName}`}
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div>
-                  <h2 className="font-medium">
+                <div className="min-w-0">
+                  <h2 className="font-medium text-sm sm:text-base truncate">
                     {profile.firstName} {profile.lastName}
                   </h2>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-xs sm:text-sm text-gray-500">
                     Member since {profile.dateJoined}
                   </p>
                 </div>
               </div>
 
+              {/* Navigation Menu */}
               <nav className="space-y-1">
-                <button
-                  onClick={() => setActiveTab("personal-info")}
-                  className={`w-full text-left px-3 py-2 rounded-md ${
-                    activeTab === "personal-info"
-                      ? "bg-black text-white"
-                      : "text-gray-700 hover:bg-gray-100"
-                  }`}
-                >
-                  Personal Information
-                </button>
-                <button
-                  onClick={() => setActiveTab("orders")}
-                  className={`w-full text-left px-3 py-2 rounded-md ${
-                    activeTab === "orders"
-                      ? "bg-black text-white"
-                      : "text-gray-700 hover:bg-gray-100"
-                  }`}
-                >
-                  Order History
-                </button>
-                <button
-                  onClick={() => setActiveTab("addresses")}
-                  className={`w-full text-left px-3 py-2 rounded-md ${
-                    activeTab === "addresses"
-                      ? "bg-black text-white"
-                      : "text-gray-700 hover:bg-gray-100"
-                  }`}
-                >
-                  Addresses
-                </button>
-                <button
-                  onClick={() => setActiveTab("payment")}
-                  className={`w-full text-left px-3 py-2 rounded-md ${
-                    activeTab === "payment"
-                      ? "bg-black text-white"
-                      : "text-gray-700 hover:bg-gray-100"
-                  }`}
-                >
-                  Payment Methods
-                </button>
-                <button
-                  onClick={() => setActiveTab("settings")}
-                  className={`w-full text-left px-3 py-2 rounded-md ${
-                    activeTab === "settings"
-                      ? "bg-black text-white"
-                      : "text-gray-700 hover:bg-gray-100"
-                  }`}
-                >
-                  Account Settings
-                </button>
+                {[
+                  { id: 'personal-info', label: 'Personal Information' },
+                  { id: 'orders', label: 'Order History' },
+                  { id: 'addresses', label: 'Addresses' },
+                  { id: 'payment', label: 'Payment Methods' },
+                  { id: 'settings', label: 'Account Settings' }
+                ].map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    className={`w-full text-left px-3 py-2 rounded-md text-sm sm:text-base transition-colors ${
+                      activeTab === item.id
+                        ? 'bg-black text-white'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
                 <button
                   onClick={() => {
                     logout();
-                    router.push("/login");
+                    router.push('/login');
                   }}
-                  className="w-full text-left px-3 py-2 rounded-md text-red-600 hover:bg-red-50"
+                  className="w-full text-left px-3 py-2 rounded-md text-sm sm:text-base text-red-600 hover:bg-red-50 transition-colors"
                 >
                   Logout
                 </button>
@@ -258,13 +229,13 @@ const ProfilePage = () => {
           </div>
 
           {/* Main Content */}
-          <div className="md:w-3/4">
-            <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="lg:w-3/4">
+            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
               {/* Personal Information Tab */}
-              {activeTab === "personal-info" && (
+              {activeTab === 'personal-info' && (
                 <div>
-                  <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl font-bold">Personal Information</h2>
+                  <div className="flex justify-between items-center mb-4 sm:mb-6">
+                    <h2 className="text-lg sm:text-xl font-bold">Personal Information</h2>
                     {!isEditing && (
                       <button
                         onClick={() => setIsEditing(true)}
@@ -276,8 +247,8 @@ const ProfilePage = () => {
                   </div>
 
                   {isEditing ? (
-                    <form onSubmit={handleSubmit}>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
                             First Name
@@ -287,7 +258,7 @@ const ProfilePage = () => {
                             name="firstName"
                             value={formData.firstName}
                             onChange={handleInputChange}
-                            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
+                            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
                           />
                         </div>
                         <div>
@@ -299,12 +270,12 @@ const ProfilePage = () => {
                             name="lastName"
                             value={formData.lastName}
                             onChange={handleInputChange}
-                            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
+                            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
                           />
                         </div>
                       </div>
 
-                      <div className="mb-4">
+                      <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Email
                         </label>
@@ -313,11 +284,11 @@ const ProfilePage = () => {
                           name="email"
                           value={formData.email}
                           onChange={handleInputChange}
-                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
+                          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
                         />
                       </div>
 
-                      <div className="mb-6">
+                      <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Phone Number
                         </label>
@@ -326,24 +297,24 @@ const ProfilePage = () => {
                           name="phone"
                           value={formData.phone}
                           onChange={handleInputChange}
-                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
+                          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
                         />
                       </div>
 
-                      <div className="flex justify-end gap-3">
+                      <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 pt-4">
                         <button
                           type="button"
                           onClick={() => {
                             setFormData({ ...profile });
                             setIsEditing(false);
                           }}
-                          className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                          className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
                         >
                           Cancel
                         </button>
                         <button
                           type="submit"
-                          className="px-4 py-2 bg-black text-white rounded-md text-sm font-medium hover:bg-gray-800"
+                          className="w-full sm:w-auto px-4 py-2 bg-black text-white rounded-md text-sm font-medium hover:bg-gray-800"
                         >
                           Save Changes
                         </button>
@@ -351,75 +322,77 @@ const ProfilePage = () => {
                     </form>
                   ) : (
                     <div className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <p className="text-sm text-gray-500">First Name</p>
-                          <p className="font-medium">{profile.firstName}</p>
+                          <p className="text-xs sm:text-sm text-gray-500">First Name</p>
+                          <p className="text-sm sm:text-base font-medium">{profile.firstName}</p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-500">Last Name</p>
-                          <p className="font-medium">{profile.lastName}</p>
+                          <p className="text-xs sm:text-sm text-gray-500">Last Name</p>
+                          <p className="text-sm sm:text-base font-medium">{profile.lastName}</p>
                         </div>
                       </div>
 
                       <div>
-                        <p className="text-sm text-gray-500">Email</p>
-                        <p className="font-medium">{profile.email}</p>
+                        <p className="text-xs sm:text-sm text-gray-500">Email</p>
+                        <p className="text-sm sm:text-base font-medium">{profile.email}</p>
                       </div>
 
                       <div>
-                        <p className="text-sm text-gray-500">Phone Number</p>
-                        <p className="font-medium">{profile.phone}</p>
+                        <p className="text-xs sm:text-sm text-gray-500">Phone Number</p>
+                        <p className="text-sm sm:text-base font-medium">{profile.phone}</p>
                       </div>
                     </div>
                   )}
                 </div>
               )}
 
-              {/* Order History Tab */}
-              {activeTab === "orders" && (
+              {/* Orders Tab */}
+              {activeTab === 'orders' && (
                 <div>
-                  <h2 className="text-xl font-bold mb-6">Order History</h2>
+                  <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6">Order History</h2>
 
                   {mockOrders.length > 0 ? (
-                    <div className="space-y-6">
+                    <div className="space-y-4 sm:space-y-6">
                       {mockOrders.map((order) => (
                         <div
                           key={order.id}
                           className="border border-gray-200 rounded-lg overflow-hidden"
                         >
-                          <div className="bg-gray-50 px-4 py-3 border-b border-gray-200 flex justify-between items-center">
-                            <div>
-                              <p className="font-medium">{order.id}</p>
-                              <p className="text-sm text-gray-500">
-                                Placed on {order.date}
-                              </p>
-                            </div>
-                            <div className="text-right">
-                              <p className="font-medium">
-                                ${order.total.toFixed(2)}
-                              </p>
-                              <span
-                                className={`inline-block px-2 py-1 text-xs rounded-full ${
-                                  order.status === "Delivered"
-                                    ? "bg-green-100 text-green-800"
-                                    : "bg-blue-100 text-blue-800"
-                                }`}
-                              >
-                                {order.status}
-                              </span>
+                          <div className="bg-gray-50 px-3 sm:px-4 py-3 border-b border-gray-200">
+                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                              <div>
+                                <p className="font-medium text-sm sm:text-base">{order.id}</p>
+                                <p className="text-xs sm:text-sm text-gray-500">
+                                  Placed on {order.date}
+                                </p>
+                              </div>
+                              <div className="flex items-center justify-between sm:flex-col sm:items-end">
+                                <p className="font-medium text-sm sm:text-base">
+                                  ${order.total.toFixed(2)}
+                                </p>
+                                <span
+                                  className={`inline-block px-2 py-1 text-xs rounded-full ${
+                                    order.status === "Delivered"
+                                      ? "bg-green-100 text-green-800"
+                                      : "bg-blue-100 text-blue-800"
+                                  }`}
+                                >
+                                  {order.status}
+                                </span>
+                              </div>
                             </div>
                           </div>
 
-                          <div className="p-4">
+                          <div className="p-3 sm:p-4">
                             {order.items.map((item) => (
                               <div
                                 key={item.id}
-                                className="flex justify-between py-2"
+                                className="flex justify-between py-2 text-sm sm:text-base"
                               >
                                 <div>
                                   <p className="font-medium">{item.name}</p>
-                                  <p className="text-sm text-gray-500">
+                                  <p className="text-xs sm:text-sm text-gray-500">
                                     Qty: {item.quantity}
                                   </p>
                                 </div>
@@ -430,7 +403,7 @@ const ProfilePage = () => {
                             ))}
                           </div>
 
-                          <div className="bg-gray-50 px-4 py-3 border-t border-gray-200 flex justify-between">
+                          <div className="bg-gray-50 px-3 sm:px-4 py-3 border-t border-gray-200 flex flex-col sm:flex-row gap-2 sm:justify-between">
                             <button className="text-sm font-medium text-blue-600 hover:text-blue-800">
                               View Details
                             </button>
@@ -445,7 +418,7 @@ const ProfilePage = () => {
                     </div>
                   ) : (
                     <div className="text-center py-8">
-                      <p className="text-gray-500 mb-4">
+                      <p className="text-gray-500 mb-4 text-sm sm:text-base">
                         You haven't placed any orders yet.
                       </p>
                       <button
@@ -460,11 +433,11 @@ const ProfilePage = () => {
               )}
 
               {/* Addresses Tab */}
-              {activeTab === "addresses" && (
+              {activeTab === 'addresses' && (
                 <div>
-                  <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl font-bold">Saved Addresses</h2>
-                    <button className="px-4 py-2 bg-black text-white rounded-md text-sm font-medium hover:bg-gray-800">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4 sm:mb-6">
+                    <h2 className="text-lg sm:text-xl font-bold">Saved Addresses</h2>
+                    <button className="w-full sm:w-auto px-4 py-2 bg-black text-white rounded-md text-sm font-medium hover:bg-gray-800">
                       Add New Address
                     </button>
                   </div>
@@ -473,7 +446,7 @@ const ProfilePage = () => {
                     {mockAddresses.map((address) => (
                       <div
                         key={address.id}
-                        className="border border-gray-200 rounded-lg p-4 relative"
+                        className="border border-gray-200 rounded-lg p-3 sm:p-4 relative"
                       >
                         {address.isDefault && (
                           <span className="absolute top-2 right-2 bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
@@ -481,24 +454,26 @@ const ProfilePage = () => {
                           </span>
                         )}
 
-                        <p className="font-medium mb-1">{address.type}</p>
-                        <p className="text-sm">{address.fullName}</p>
-                        <p className="text-sm">{address.address}</p>
-                        <p className="text-sm">
-                          {address.city}, {address.state} {address.zipCode}
-                        </p>
-                        <p className="text-sm">{address.country}</p>
-                        <p className="text-sm mb-3">{address.phone}</p>
+                        <p className="font-medium text-sm sm:text-base mb-1">{address.type}</p>
+                        <div className="space-y-1 text-xs sm:text-sm mb-3">
+                          <p>{address.fullName}</p>
+                          <p>{address.address}</p>
+                          <p>
+                            {address.city}, {address.state} {address.zipCode}
+                          </p>
+                          <p>{address.country}</p>
+                          <p>{address.phone}</p>
+                        </div>
 
-                        <div className="flex gap-3">
-                          <button className="text-sm font-medium text-blue-600 hover:text-blue-800">
+                        <div className="flex flex-wrap gap-2 sm:gap-3">
+                          <button className="text-xs sm:text-sm font-medium text-blue-600 hover:text-blue-800">
                             Edit
                           </button>
-                          <button className="text-sm font-medium text-red-600 hover:text-red-800">
+                          <button className="text-xs sm:text-sm font-medium text-red-600 hover:text-red-800">
                             Delete
                           </button>
                           {!address.isDefault && (
-                            <button className="text-sm font-medium text-gray-600 hover:text-gray-800">
+                            <button className="text-xs sm:text-sm font-medium text-gray-600 hover:text-gray-800">
                               Set as Default
                             </button>
                           )}
@@ -510,11 +485,11 @@ const ProfilePage = () => {
               )}
 
               {/* Payment Methods Tab */}
-              {activeTab === "payment" && (
+              {activeTab === 'payment' && (
                 <div>
-                  <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl font-bold">Payment Methods</h2>
-                    <button className="px-4 py-2 bg-black text-white rounded-md text-sm font-medium hover:bg-gray-800">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4 sm:mb-6">
+                    <h2 className="text-lg sm:text-xl font-bold">Payment Methods</h2>
+                    <button className="w-full sm:w-auto px-4 py-2 bg-black text-white rounded-md text-sm font-medium hover:bg-gray-800">
                       Add New Card
                     </button>
                   </div>
@@ -523,7 +498,7 @@ const ProfilePage = () => {
                     {mockPaymentMethods.map((method) => (
                       <div
                         key={method.id}
-                        className="border border-gray-200 rounded-lg p-4 relative"
+                        className="border border-gray-200 rounded-lg p-3 sm:p-4 relative"
                       >
                         {method.isDefault && (
                           <span className="absolute top-2 right-2 bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
@@ -542,21 +517,21 @@ const ProfilePage = () => {
                             </div>
                           )}
                           <div>
-                            <p className="font-medium">
+                            <p className="font-medium text-sm sm:text-base">
                               **** **** **** {method.lastFour}
                             </p>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-xs sm:text-sm text-gray-500">
                               Expires {method.expiry}
                             </p>
                           </div>
                         </div>
 
-                        <div className="flex gap-3">
-                          <button className="text-sm font-medium text-red-600 hover:text-red-800">
+                        <div className="flex flex-wrap gap-2 sm:gap-3">
+                          <button className="text-xs sm:text-sm font-medium text-red-600 hover:text-red-800">
                             Remove
                           </button>
                           {!method.isDefault && (
-                            <button className="text-sm font-medium text-gray-600 hover:text-gray-800">
+                            <button className="text-xs sm:text-sm font-medium text-gray-600 hover:text-gray-800">
                               Set as Default
                             </button>
                           )}
@@ -567,84 +542,50 @@ const ProfilePage = () => {
                 </div>
               )}
 
-              {/* Account Settings Tab */}
-              {activeTab === "settings" && (
+              {/* Settings Tab */}
+              {activeTab === 'settings' && (
                 <div>
-                  <h2 className="text-xl font-bold mb-6">Account Settings</h2>
+                  <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6">Account Settings</h2>
 
                   <div className="space-y-6">
                     {/* Password Change Section */}
                     <div className="pb-6 border-b border-gray-200">
-                      <h3 className="text-lg font-medium mb-4">Password</h3>
-                      <button className="px-4 py-2 bg-black text-white rounded-md text-sm font-medium hover:bg-gray-800">
+                      <h3 className="text-base sm:text-lg font-medium mb-4">Password</h3>
+                      <button className="w-full sm:w-auto px-4 py-2 bg-black text-white rounded-md text-sm font-medium hover:bg-gray-800">
                         Change Password
                       </button>
                     </div>
 
-                    {/* Preferences Section */}
+                    {/* Email Preferences */}
                     <div className="pb-6 border-b border-gray-200">
-                      <h3 className="text-lg font-medium mb-4">
-                        Email Preferences
-                      </h3>
-
+                      <h3 className="text-base sm:text-lg font-medium mb-4">Email Preferences</h3>
                       <div className="space-y-3">
-                        <div className="flex items-center">
-                          <input
-                            id="marketing-emails"
-                            type="checkbox"
-                            defaultChecked
-                            className="h-4 w-4 text-black border-gray-300 rounded focus:ring-black"
-                          />
-                          <label
-                            htmlFor="marketing-emails"
-                            className="ml-2 block text-sm text-gray-700"
-                          >
-                            Marketing emails and newsletters
-                          </label>
-                        </div>
-
-                        <div className="flex items-center">
-                          <input
-                            id="order-updates"
-                            type="checkbox"
-                            defaultChecked
-                            className="h-4 w-4 text-black border-gray-300 rounded focus:ring-black"
-                          />
-                          <label
-                            htmlFor="order-updates"
-                            className="ml-2 block text-sm text-gray-700"
-                          >
-                            Order status updates
-                          </label>
-                        </div>
-
-                        <div className="flex items-center">
-                          <input
-                            id="account-alerts"
-                            type="checkbox"
-                            defaultChecked
-                            className="h-4 w-4 text-black border-gray-300 rounded focus:ring-black"
-                          />
-                          <label
-                            htmlFor="account-alerts"
-                            className="ml-2 block text-sm text-gray-700"
-                          >
-                            Account alerts
-                          </label>
-                        </div>
+                        {['Marketing emails and newsletters', 'Order status updates', 'Account alerts'].map((pref, index) => (
+                          <div key={index} className="flex items-start sm:items-center">
+                            <input
+                              id={`pref-${index}`}
+                              type="checkbox"
+                              defaultChecked
+                              className="mt-1 sm:mt-0 h-4 w-4 text-black border-gray-300 rounded focus:ring-black"
+                            />
+                            <label
+                              htmlFor={`pref-${index}`}
+                              className="ml-2 block text-sm text-gray-700"
+                            >
+                              {pref}
+                            </label>
+                          </div>
+                        ))}
                       </div>
                     </div>
 
-                    {/* Delete Account Section */}
+                    {/* Delete Account */}
                     <div>
-                      <h3 className="text-lg font-medium mb-4">
-                        Delete Account
-                      </h3>
-                      <p className="text-sm text-gray-500 mb-4">
-                        Once you delete your account, there is no going back.
-                        Please be certain.
+                      <h3 className="text-base sm:text-lg font-medium mb-4">Delete Account</h3>
+                      <p className="text-xs sm:text-sm text-gray-500 mb-4">
+                        Once you delete your account, there is no going back. Please be certain.
                       </p>
-                      <button className="px-4 py-2 border border-red-300 text-red-600 rounded-md text-sm font-medium hover:bg-red-50">
+                      <button className="w-full sm:w-auto px-4 py-2 border border-red-300 text-red-600 rounded-md text-sm font-medium hover:bg-red-50">
                         Delete My Account
                       </button>
                     </div>
