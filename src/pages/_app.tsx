@@ -7,7 +7,7 @@ import { ToastContainer } from "react-toastify";
 import Head from "next/head";
 import "@/styles/globals.css";
 
-function MyApp({ Component, pageProps }: AppProps) {
+export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <AuthProvider>
       <CartProvider>
@@ -30,4 +30,10 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 }
 
-export default MyApp;
+// export default MyApp;
+// import "@/styles/globals.css";
+// import type { AppProps } from "next/app";
+
+// export default function App({ Component, pageProps }: AppProps) {
+//   return <Component {...pageProps} />;
+// }
