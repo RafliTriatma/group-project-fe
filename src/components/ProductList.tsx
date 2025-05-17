@@ -432,8 +432,14 @@ const ProductList: React.FC<Props> = ({ products }) => {
             alt={product.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             loading="lazy"
+            onError={(e) => {
+              // When image fails to load, set the src to the placeholder image
+              const target = e.target as HTMLImageElement;
+              target.src = "/placeholder.svg";
+              // Add a class to indicate the image failed to load
+              target.classList.add("opacity-75");
+            }}
           />
-          
           {/* Conditional Promo Label */}
           {promoLabel && (
             <div className="absolute top-1 sm:top-2 left-1 sm:left-2">
